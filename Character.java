@@ -2,7 +2,7 @@
  * Character.java
  * By Emma Lane-Smith, Julie Pham, and Kelly Xiang
  * Jan 12, 2023
- * Abstract class for character profiles: includes things like name, age, job, etc.
+ * Class for character profiles: includes things like name, age, job, etc.
  */
 package grade12;
 
