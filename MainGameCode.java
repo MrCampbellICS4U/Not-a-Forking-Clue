@@ -4,7 +4,6 @@
  * Jan 11, 2024
  * Main code for Not a Forking Clue
  */
-package grade12;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -23,11 +22,13 @@ public class MainGameCode extends JFrame implements ActionListener{
 	JPanel mainPanel;
 	DrawingPanel dp;
 	JButton next;
-	private Round currentRound;
+	//private Round currentRound;
 	
 	// timer stuff
 	Timer timer;
+	ActionListener action;
 	int TIMERSPEED = 1000; // speed in seconds
+	int count;
 	
 	// image declaration
 	BufferedImage restaurantbg;
@@ -69,6 +70,15 @@ public class MainGameCode extends JFrame implements ActionListener{
 		JLabel character = new JLabel(po.getImageIcon());
 		character.setBounds(50, 50, character.getWidth(), character.getHeight());
 		this.add(character);
+		
+		action = new ActionListener() {
+			@Override
+		    public void actionPerformed(ActionEvent e) {
+				count--;
+				if (count == 0) timer.stop();
+			}
+		};
+		timer = new Timer(TIMERSPEED, action);
 		
 		// pack, centre, display
 		this.add(mainPanel);
