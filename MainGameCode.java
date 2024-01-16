@@ -23,6 +23,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	JPanel mainPanel;
 	DrawingPanel dp;
 	JButton next;
+	private Round currentRound;
 	
 	// timer stuff
 	Timer timer;
@@ -32,8 +33,8 @@ public class MainGameCode extends JFrame implements ActionListener{
 	BufferedImage restaurantbg;
 	
 	// panel width & height
-	private final static int PANW = 1920;
-	private final static int PANH = 1080;
+	private final static int PANW = 1440;
+	private final static int PANH = 1440;
 	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -57,7 +58,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 		mainPanel.add(dp);
 		
 		// add background
-		restaurantbg = loadImage("/totoro.png");
+		restaurantbg = loadImage("/full_background_black.png");
 		
 		// create characters
 		Character po = new Character("Po", 21, "Chef", "A gluttonous but adorable panda.");
