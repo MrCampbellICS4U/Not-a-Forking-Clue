@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 public class Character {
 	private String name, role;
 	private int age;
-	private String profile;
+	private String description;
 	
 	private String imagePath;  // path to character's image file
     private ImageIcon imageIcon;  // ImageIcon to store the character's image on JLabel later
@@ -27,10 +27,11 @@ public class Character {
 	 * @param age	character's age
 	 * @param role	character's role/job
 	 */
-	public Character(String name, int age, String role) {
+	public Character(String name, int age, String role, String description) {
 		this.name = name;
 		this.age = age;
 		this.role = role;
+		this.description = description;
 	}
 	
 	/**
