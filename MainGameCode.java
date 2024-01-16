@@ -1,114 +1,125 @@
 /*
- * Character.java
+ * MainGameCode.java
  * By Emma Lane-Smith, Julie Pham, and Kelly Xiang
- * Jan 12, 2023
- * Abstract class for character profiles: includes things like name, age, job, etc.
+ * Jan 11, 2024
+ * Main code for Not a Forking Clue
  */
 package grade12;
-
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
-public class Character {
-	private String name, role;
-	private int age;
-	private String profile;
-	
-	private String imagePath;  // path to character's image file
-    private ImageIcon imageIcon;  // ImageIcon to store the character's image on JLabel later
-	
-	/**
-	 * class constructor
-	 * @param name	character's name
-	 * @param age	character's age
-	 * @param role	character's role/job
-	 */
-	public Character(String name, int age, String role) {
-		this.name = name;
-		this.age = age;
-		this.role = role;
-	}
-	
-	/**
-	 * getter method for character's name
-	 * @return 	character's name
-	 */
-	public String getName() {
-		return this.name;
-	}
-	
-	/**
-	 * setter method for character's name
-	 * @param name	character's name
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	/**
-	 * getter method for character's role
-	 * @return	character's role
-	 */
-	public String getRole() {
-		return this.role;
-	}
-	
-	/**
-	 * setter method for character's role
-	 * @param role	character's role
-	 */
-	public void setRole(String role) {
-		this.role = role;
-	}
-	
-	/**
-	 * getter method for character's age
-	 * @return	character's age
-	 */
-	public int getAge() {
-		return this.age;
-	}
-	
-	/**
-	 * setter method for character's age
-	 * @param age	character's age
-	 */
-	public void setAge(int age) {
-		this.age = age;
-	}
-	
-	public ImageIcon getImageIcon() {
-        return imageIcon;
-    }
+import java.io.*;
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-        loadImageIcon();  // call method to load the image when the path is set
-    }
+public class MainGameCode extends JFrame implements ActionListener{
+
+	// player name
+	String name = "Judy";
+	
+	// variables
+	JPanel mainPanel;
+	DrawingPanel dp;
+	JButton next;
+	
+	// timer stuff
+	Timer timer;
+	int TIMERSPEED = 1000; // speed in seconds
+	
+	// image declaration
+	BufferedImage restaurantbg;
+	
+	// panel width & height
+	private final static int PANW = 1920;
+	private final static int PANH = 1080;
+	
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				new MainGameCode();
+			}
+		});
+	}
+	
+	public MainGameCode() {
+		// set up window
+		this.setTitle("Not a Forking Clue");
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+		
+		// set up main panel
+		mainPanel = new JPanel();
+		
+		// drawing panel
+		dp = new DrawingPanel();
+		mainPanel.add(dp);
+		
+		// add background
+		restaurantbg = loadImage("/totoro.png");
+		
+		// create characters
+		Character po = new Character("Po", 21, "Chef");
+		Character tramp = new Character("Tramp", 27, "Waiter");
+		Character donald = new Character("Donald Duck", 19, "Dish Boy");
+		
+		// test
+		po.setName("Protagonist");
+		po.setImagePath("/po.png");
+		JLabel character = new JLabel(po.getImageIcon());
+		character.setBounds(50, 50, character.getWidth(), character.getHeight());
+		this.add(character);
+		
+		// pack, centre, display
+		this.add(mainPanel);
+		this.pack();
+		this.setLocationRelativeTo(null);
+		this.setVisible(true);
+	}
+	
+	private class DrawingPanel extends JPanel{
+		private static final long serialVersionUID = 1L;
+
+		DrawingPanel(){
+			this.setPreferredSize(new Dimension(PANW, PANH));
+		}
+		
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			Graphics2D g2 = (Graphics2D)g;
+			
+			// draw background
+			g2.drawImage(restaurantbg, 0, 0, restaurantbg.getWidth(), restaurantbg.getHeight(), null);
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	/**
-	 * loads an image from a file in the resource folder (but for an ImageIcon)
+	 * loads an image from a file in the resource folder
 	 * @param filename	name of the file
-	 * @return	returns a ImageIcon connected to filename
+	 * @return	returns a BufferedImage connected to filename
 	 */
-	private void loadImageIcon() {
-	    ImageIcon icon = null;    
-	    java.net.URL imageURL = this.getClass().getResource(imagePath);
-	    
-	    if (imageURL != null) {
-	        try {
-	            icon = new ImageIcon(imageURL);
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    } else {
-	        JOptionPane.showMessageDialog(null, "An image failed to load: " + imagePath, "ERROR", JOptionPane.ERROR_MESSAGE);
-	    }
-	    
-	    imageIcon = icon;
+	BufferedImage loadImage(String filename) {
+		BufferedImage image = null;	
+		java.net.URL imageURL = this.getClass().getResource(filename);
+		
+		if (imageURL != null) {
+			try {
+				image = ImageIO.read(imageURL);
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else { 
+			JOptionPane.showMessageDialog(null, "An image failed to load: " + filename , "ERROR", JOptionPane.ERROR_MESSAGE);
+		}
+		return image;
 	}
+
 }
