@@ -16,6 +16,8 @@ import javax.swing.JOptionPane;
 public class Character {
 	private String name, role;
 	private int age;
+	private String profile;
+	
 	private String imagePath;  // path to character's image file
     private ImageIcon imageIcon;  // ImageIcon to store the character's image on JLabel later
 	
