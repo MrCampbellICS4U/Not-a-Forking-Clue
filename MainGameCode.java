@@ -60,9 +60,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 		restaurantbg = loadImage("/totoro.png");
 		
 		// create characters
-		Character po = new Character("Po", 21, "Chef");
-		Character tramp = new Character("Tramp", 27, "Waiter");
-		Character donald = new Character("Donald Duck", 19, "Dish Boy");
+		Character po = new Character("Po", 21, "Chef", "A gluttonous but adorable panda.");
 		
 		// test
 		po.setName("Protagonist");
