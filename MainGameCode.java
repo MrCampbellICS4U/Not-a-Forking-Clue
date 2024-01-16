@@ -73,7 +73,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 		
 		action = new ActionListener() {
 			@Override
-		    public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {
 				count--;
 				if (count == 0) timer.stop();
 			}
