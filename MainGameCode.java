@@ -44,6 +44,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 		// set up window
 		this.setTitle("Not a Forking Clue");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 		
 		// set up main panel
 		mainPanel = new JPanel();
@@ -59,6 +60,13 @@ public class MainGameCode extends JFrame implements ActionListener{
 		Character po = new Character("Po", 21, "Chef");
 		Character tramp = new Character("Tramp", 27, "Waiter");
 		Character donald = new Character("Donald Duck", 19, "Dish Boy");
+		
+		// test
+		po.setName("Protagonist");
+		po.setImagePath("/po.png");
+		JLabel character = new JLabel(po.getImageIcon());
+		character.setBounds(50, 50, character.getWidth(), character.getHeight());
+		this.add(character);
 		
 		// pack, centre, display
 		this.add(mainPanel);
