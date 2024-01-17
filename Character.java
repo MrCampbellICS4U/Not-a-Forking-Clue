@@ -18,9 +18,6 @@ public class Character {
 	private int age;
 	private String description;
 	
-	private String imagePath;  // path to character's image file
-    private ImageIcon imageIcon;  // ImageIcon to store the character's image on JLabel later
-	
 	/**
 	 * class constructor
 	 * @param name	character's name
@@ -80,36 +77,5 @@ public class Character {
 	 */
 	public void setAge(int age) {
 		this.age = age;
-	}
-	
-	public ImageIcon getImageIcon() {
-        return imageIcon;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-        loadImageIcon();  // call method to load the image when the path is set
-    }
-	
-	/**
-	 * loads an image from a file in the resource folder (but for an ImageIcon)
-	 * @param filename	name of the file
-	 * @return	returns a ImageIcon connected to filename
-	 */
-	private void loadImageIcon() {
-	    ImageIcon icon = null;    
-	    java.net.URL imageURL = this.getClass().getResource(imagePath);
-	    
-	    if (imageURL != null) {
-	        try {
-	            icon = new ImageIcon(imageURL);
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    } else {
-	        JOptionPane.showMessageDialog(null, "An image failed to load: " + imagePath, "ERROR", JOptionPane.ERROR_MESSAGE);
-	    }
-	    
-	    imageIcon = icon;
 	}
 }
