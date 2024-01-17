@@ -4,6 +4,8 @@
  * Jan 11, 2024
  * Main code for Not a Forking Clue
  */
+package grade12;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -33,9 +35,15 @@ public class MainGameCode extends JFrame implements ActionListener{
 	// image declaration
 	BufferedImage restaurantbg;
 	
+	// context panel components
+	JButton nextButton;
+    JLabel title;
+    JTextArea context;
+    JScrollPane scroll;
+	
 	// panel width & height
-	private final static int PANW = 1440;
-	private final static int PANH = 1440;
+	private final static int PANW = 1440 - 700;
+	private final static int PANH = 1440 - 700;
 	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -45,12 +53,76 @@ public class MainGameCode extends JFrame implements ActionListener{
 		});
 	}
 	
+	/**
+	 * constructor
+	 */
 	public MainGameCode() {
-		// set up window
-		this.setTitle("Not a Forking Clue");
+		this.setTitle("Campbell's Cuisine");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 		
+		// set up menu screen
+		setupContextPanel();
+		
+		// set up timer
+		timer = new Timer(TIMERSPEED, this);
+	}
+	
+	private void setupContextPanel() {
+	    JPanel contextPanel = new JPanel();
+	    contextPanel.setLayout(new BoxLayout(contextPanel, BoxLayout.Y_AXIS));
+	    contextPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+
+	    title = new JLabel("Welcome to Campbell's Cuisine!");
+
+	    context = new JTextArea("CONGRATULATIONS! You have been selected to solve the most devious "
+	    		+ "ongoing crime in London, ON.\n London’s infamous “Cereal Killer”—not serial…CEREAL—has been "
+	    		+ "attacking restaurants at random, killing chefs, patrons, waitresses, and many more. Secret intel "
+	    		+ "points towards Campbell’s Cuisine as the Cereal Killer’s next stop; they will be there tonight.\n"
+	    		+ "\n Your job is to unmask the killer before it’s too late. If you don’t act quickly enough, employees "
+	    		+ "and customers will die. After anybody dies, you will have ONE 90-second round to search for hints, "
+	    		+ "before the Cereal Killer will have covered up their tracks—and murdered another innocent creature!\n"
+	    		+ "\n There will be 3 hints per round. A hint may exist in the form of a CLUE (a written envelope full "
+	    		+ "of useful information), a RIDDLE (an object that belonged to the victim), or a GHOST (the victim’s "
+	    		+ "vengeful spirit). After your 90 seconds are up, all hints will disappear and the Cereal Killer will "
+	    		+ "find another victim (thereby starting a new round).\n\n To aid you in your endeavours, your "
+	    		+ "detective agency has prepared a list of suspects (and descriptions). At any point in the game, you "
+	    		+ "can arrest someone from the suspect list; however, if you’re wrong, you will have failed and "
+	    		+ "another detective will replace you. THERE ARE NO SECOND CHANCES. On the other hand, the sooner you "
+	    		+ "guess correctly, the better; you will be evaluated based on the number of people you let die. \n"
+	    		+ "\n Quick! The restaurant’s dishboy, Donald Duck, has just been reported dead. Start looking for clues!");
+
+	    context.setLineWrap(true);
+	    context.setWrapStyleWord(true);
+	    context.setPreferredSize(new Dimension(300, 150));
+
+	    JScrollPane scrollPane = new JScrollPane(context);
+	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+	    nextButton = new JButton("NEXT");
+	    nextButton.addActionListener(e -> goToMainPanel());
+
+	    contextPanel.add(title);
+	    contextPanel.add(Box.createVerticalStrut(10));
+	    contextPanel.add(scrollPane);
+	    contextPanel.add(Box.createVerticalStrut(10));
+	    contextPanel.add(nextButton);
+
+	    this.add(contextPanel);
+	    this.pack();
+	    this.setLocationRelativeTo(null);
+	    this.setVisible(true);
+	}
+
+
+    private void goToMainPanel() {
+        // remove context panel and show the main panel
+        getContentPane().removeAll();
+        setupMainPanel();
+        validate();
+        repaint();
+    }
+	
+	private void setupMainPanel() {
 		// set up main panel
 		mainPanel = new JPanel();
 		
@@ -78,7 +150,6 @@ public class MainGameCode extends JFrame implements ActionListener{
 				if (count == 0) timer.stop();
 			}
 		};
-		timer = new Timer(TIMERSPEED, action);
 		
 		// pack, centre, display
 		this.add(mainPanel);
@@ -88,7 +159,6 @@ public class MainGameCode extends JFrame implements ActionListener{
 	}
 	
 	private class DrawingPanel extends JPanel{
-		private static final long serialVersionUID = 1L;
 
 		DrawingPanel(){
 			this.setPreferredSize(new Dimension(PANW, PANH));
@@ -99,7 +169,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 			Graphics2D g2 = (Graphics2D)g;
 			
 			// draw background
-			g2.drawImage(restaurantbg, 0, 0, restaurantbg.getWidth(), restaurantbg.getHeight(), null);
+			g2.drawImage(restaurantbg, 0, 0, PANW, PANH, null);
 		}
 	}
 
