@@ -30,7 +30,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private Timer timer;
 	private ActionListener action;
 	private int TIMERSPEED = 1000; // speed in seconds
-	private int roundTime = 90; // time for first round
+	private int roundTime = 90; // time for each first round
 	
 	// image declaration
 	private BufferedImage restaurantbg;
