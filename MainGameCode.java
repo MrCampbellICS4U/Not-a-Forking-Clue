@@ -30,10 +30,12 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private Timer timer;
 	private ActionListener action;
 	private int TIMERSPEED = 1000; // speed in seconds
-	private int roundTime = 90; // time for each first round
+	private int count;
+	private int roundTime = 90; // time for each round
 	
 	// image declaration
 	private BufferedImage restaurantbg;
+	private BufferedImage poImage;
 	
 	// context panel components
 	private JButton nextButton;
@@ -125,7 +127,7 @@ public class MainGameCode extends JFrame implements ActionListener{
         setupMainPanel();
         validate();
         repaint();
-	timer.start();
+        timer.start();
     }
 	
 	private void setupMainPanel() {
@@ -141,17 +143,12 @@ public class MainGameCode extends JFrame implements ActionListener{
 		
 		// create characters
 		Character po = new Character("Po", 21, "Chef", "A gluttonous but adorable panda.");
-		
-		// test
-		po.setName("Protagonist");
-		po.setImagePath("/po.png");
-		JLabel character = new JLabel(po.getImageIcon());
-		character.setBounds(50, 50, character.getWidth(), character.getHeight());
-		mainPanel.add(character);
+		poImage = loadImage("/po.png");
 		
 		action = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				count--;
 				roundTime--;
 				if (count == 0) {
 					timer.stop();
@@ -177,6 +174,9 @@ public class MainGameCode extends JFrame implements ActionListener{
 			
 			// draw background
 			g2.drawImage(restaurantbg, 0, 0, PANW, PANH, null);
+			
+			// draw background
+			g2.drawImage(poImage, 0, 0, poImage.getWidth(), poImage.getHeight(), null);
 		}
 	}
 
