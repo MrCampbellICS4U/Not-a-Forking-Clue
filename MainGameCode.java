@@ -30,7 +30,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private Timer timer;
 	private ActionListener action;
 	private int TIMERSPEED = 1000; // speed in seconds
-	private int count;
+	private int roundTime = 90; // time for first round
 	
 	// image declaration
 	private BufferedImage restaurantbg;
@@ -152,7 +152,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 		action = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				count--;
+				roundTime--;
 				if (count == 0) {
 					timer.stop();
 				}
