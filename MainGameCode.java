@@ -125,6 +125,7 @@ public class MainGameCode extends JFrame implements ActionListener{
         setupMainPanel();
         validate();
         repaint();
+	timer.start();
     }
 	
 	private void setupMainPanel() {
