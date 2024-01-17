@@ -2,7 +2,7 @@
  * Round.java
  * By Emma Lane-Smith, Julie Pham, and Kelly Xiang
  * Jan 16, 2023
- * Abstract class for character profiles: includes things like name, age, job, etc.
+ * Class for each round including hints, clues, riddles, etc.
  */
 package grade12;
 
