@@ -18,28 +18,28 @@ import java.io.*;
 public class MainGameCode extends JFrame implements ActionListener{
 
 	// player name
-	String name = "Judy";
+	private String name = "Judy";
 	
 	// variables
-	JPanel mainPanel;
-	DrawingPanel dp;
-	JButton next;
-	//private Round currentRound;
+	private JPanel mainPanel;
+	private DrawingPanel dp;
+	private int round = 0;
+	private Round currentRound;
 	
 	// timer stuff
-	Timer timer;
-	ActionListener action;
-	int TIMERSPEED = 1000; // speed in seconds
-	int count;
+	private Timer timer;
+	private ActionListener action;
+	private int TIMERSPEED = 1000; // speed in seconds
+	private int count;
 	
 	// image declaration
-	BufferedImage restaurantbg;
+	private BufferedImage restaurantbg;
 	
 	// context panel components
-	JButton nextButton;
-    JLabel title;
-    JTextArea context;
-    JScrollPane scroll;
+	private JButton nextButton;
+    private JLabel title;
+    private JTextArea context;
+    private JScrollPane scrollPane;
 	
 	// panel width & height
 	private final static int PANW = 1440 - 700;
@@ -94,12 +94,17 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    context.setLineWrap(true);
 	    context.setWrapStyleWord(true);
 
-	    JScrollPane scrollPane = new JScrollPane(context);
+	    scrollPane = new JScrollPane(context);
 	    scrollPane.setPreferredSize(new Dimension(500,200));
 	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
 	    nextButton = new JButton("NEXT");
-	    nextButton.addActionListener(e -> goToMainPanel());
+	    nextButton.addActionListener(new ActionListener(){
+	    	@Override
+            public void actionPerformed(ActionEvent e) {
+                goToMainPanel();
+            }
+	    });
 
 	    contextPanel.add(title);
 	    contextPanel.add(Box.createVerticalStrut(10));
@@ -123,7 +128,7 @@ public class MainGameCode extends JFrame implements ActionListener{
     }
 	
 	private void setupMainPanel() {
-		// set up main panel
+		// set up main panel (on top of background)
 		mainPanel = new JPanel();
 		
 		// drawing panel
@@ -141,13 +146,15 @@ public class MainGameCode extends JFrame implements ActionListener{
 		po.setImagePath("/po.png");
 		JLabel character = new JLabel(po.getImageIcon());
 		character.setBounds(50, 50, character.getWidth(), character.getHeight());
-		this.add(character);
+		mainPanel.add(character);
 		
 		action = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				count--;
-				if (count == 0) timer.stop();
+				if (count == 0) {
+					timer.stop();
+				}
 			}
 		};
 		
@@ -159,7 +166,6 @@ public class MainGameCode extends JFrame implements ActionListener{
 	}
 	
 	private class DrawingPanel extends JPanel{
-
 		DrawingPanel(){
 			this.setPreferredSize(new Dimension(PANW, PANH));
 		}
