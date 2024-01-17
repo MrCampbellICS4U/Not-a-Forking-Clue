@@ -75,27 +75,27 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    title = new JLabel("Welcome to Campbell's Cuisine!");
 
 	    context = new JTextArea("CONGRATULATIONS! You have been selected to solve the most devious "
-	    		+ "ongoing crime in London, ON.\n London’s infamous “Cereal Killer”—not serial…CEREAL—has been "
+	    		+ "ongoing crime in London, ON.\n\nLondon’s infamous “Cereal Killer”—not serial…CEREAL—has been "
 	    		+ "attacking restaurants at random, killing chefs, patrons, waitresses, and many more. Secret intel "
 	    		+ "points towards Campbell’s Cuisine as the Cereal Killer’s next stop; they will be there tonight.\n"
-	    		+ "\n Your job is to unmask the killer before it’s too late. If you don’t act quickly enough, employees "
+	    		+ "\nYour job is to unmask the killer before it’s too late. If you don’t act quickly enough, employees "
 	    		+ "and customers will die. After anybody dies, you will have ONE 90-second round to search for hints, "
 	    		+ "before the Cereal Killer will have covered up their tracks—and murdered another innocent creature!\n"
-	    		+ "\n There will be 3 hints per round. A hint may exist in the form of a CLUE (a written envelope full "
+	    		+ "\nThere will be 3 hints per round. A hint may exist in the form of a CLUE (a written envelope full "
 	    		+ "of useful information), a RIDDLE (an object that belonged to the victim), or a GHOST (the victim’s "
 	    		+ "vengeful spirit). After your 90 seconds are up, all hints will disappear and the Cereal Killer will "
-	    		+ "find another victim (thereby starting a new round).\n\n To aid you in your endeavours, your "
+	    		+ "find another victim (thereby starting a new round).\n\nTo aid you in your endeavours, your "
 	    		+ "detective agency has prepared a list of suspects (and descriptions). At any point in the game, you "
 	    		+ "can arrest someone from the suspect list; however, if you’re wrong, you will have failed and "
 	    		+ "another detective will replace you. THERE ARE NO SECOND CHANCES. On the other hand, the sooner you "
 	    		+ "guess correctly, the better; you will be evaluated based on the number of people you let die. \n"
-	    		+ "\n Quick! The restaurant’s dishboy, Donald Duck, has just been reported dead. Start looking for clues!");
+	    		+ "\nQuick! The restaurant’s dishboy, Donald Duck, has just been reported dead. Start looking for clues!");
 
 	    context.setLineWrap(true);
 	    context.setWrapStyleWord(true);
-	    context.setPreferredSize(new Dimension(300, 150));
 
 	    JScrollPane scrollPane = new JScrollPane(context);
+	    scrollPane.setPreferredSize(new Dimension(500,200));
 	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
 	    nextButton = new JButton("NEXT");
