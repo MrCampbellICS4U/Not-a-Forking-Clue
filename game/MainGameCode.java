@@ -78,6 +78,19 @@ public class MainGameCode extends JFrame implements ActionListener{
 		setupContextPanel();
 		
 		// set up timer
+		action = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//count--;
+				roundTime--;
+				System.out.print(roundTime);
+				if (roundTime == 0) {
+					//timer.stop();
+					goToEndPanel();
+					timer.stop();
+				}
+			}
+		};
 		timer = new Timer(TIMERSPEED, action);
 	}
 	
@@ -152,20 +165,6 @@ public class MainGameCode extends JFrame implements ActionListener{
 		
 		// add background
 		restaurantbg = loadImage("/full_background_black.png");
-		
-		action = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				//count--;
-				roundTime--;
-				System.out.print(roundTime);
-				if (roundTime == 0) {
-					//timer.stop();
-					goToEndPanel();
-					timer.stop();
-				}
-			}
-		};
 		
 		JButton hi = new JButton("hi");
 		mainPanel.add(hi);
