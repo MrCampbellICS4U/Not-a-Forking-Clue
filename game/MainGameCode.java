@@ -45,7 +45,9 @@ public class MainGameCode extends JFrame implements ActionListener{
     
     // end panel components
     private JButton quitButton;
-    private JTextArea text;
+    private JRadioButton choice1, choice2;
+    private JButton okayButton;
+    private JLabel right, wrong;
 	
 	// panel width & height
 	private final static int PANW = 1440 - 700;
@@ -161,6 +163,14 @@ public class MainGameCode extends JFrame implements ActionListener{
 			}
 		};
 		
+		JButton hi = new JButton("hi");
+		mainPanel.add(hi);
+		hi.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				goToEndPanel();
+			}
+		});
+		
 		// pack, centre, display
 		this.add(mainPanel);
 		this.pack();
@@ -181,9 +191,42 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    endPanel.setLayout(new BoxLayout(endPanel, BoxLayout.Y_AXIS));
 	    endPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
 
-	    title = new JLabel("Game Over");
+	    title = new JLabel("Who was the murderer?");
 
-	    text = new JTextArea("You suck.");
+	    choice1 = new JRadioButton("Po");
+        choice2 = new JRadioButton("Tramp");
+        
+        right = new JLabel("You guessed right!");
+        wrong = new JLabel("You guessed wrong!");
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(choice1);
+        group.add(choice2);
+
+        okayButton = new JButton("NEXT");
+        okayButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // regardless of what button is pressed, remove choices from screen after they guess
+            	endPanel.remove(choice1);
+                endPanel.remove(choice2);
+                endPanel.remove(okayButton);
+                endPanel.remove(quitButton);
+
+                // repaint the container to reflect changes
+                endPanel.revalidate();
+                endPanel.repaint();
+            	
+            	// check which radio button is selected and display label accordingly
+                if (choice1.isSelected()) {
+                    endPanel.add(right);
+                    endPanel.add(quitButton);
+                } else if (choice2.isSelected()) {
+                    endPanel.add(wrong);
+                    endPanel.add(quitButton);
+                }
+            }
+        });
 
 	    quitButton = new JButton("QUIT");
 	    quitButton.addActionListener(new ActionListener(){
@@ -195,7 +238,10 @@ public class MainGameCode extends JFrame implements ActionListener{
 
 	    endPanel.add(title);
 	    endPanel.add(Box.createVerticalStrut(10));
-	    endPanel.add(text);
+	    endPanel.add(choice1);
+        endPanel.add(choice2);
+        endPanel.add(Box.createVerticalStrut(10));
+        endPanel.add(okayButton);
 	    endPanel.add(Box.createVerticalStrut(10));
 	    endPanel.add(quitButton);
 
