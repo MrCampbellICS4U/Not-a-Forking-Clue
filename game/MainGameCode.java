@@ -4,8 +4,8 @@
  * Jan 11, 2024
  * Main code for Not a Forking Clue
  */
-package game;
-//rawrrrrr test
+package grade12;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -31,7 +31,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private ActionListener action;
 	private int TIMERSPEED = 1000; // speed in seconds
 	private int count;
-	private int roundTime = 90; // time for each round
+	private int roundTime = 5; // time for each round
 	
 	// image declaration
 	private BufferedImage restaurantbg;
@@ -42,6 +42,10 @@ public class MainGameCode extends JFrame implements ActionListener{
     private JLabel title;
     private JTextArea context;
     private JScrollPane scrollPane;
+    
+    // end panel components
+    private JButton quitButton;
+    private JTextArea text;
 	
 	// panel width & height
 	private final static int PANW = 1440 - 700;
@@ -66,7 +70,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 		setupContextPanel();
 		
 		// set up timer
-		timer = new Timer(TIMERSPEED, this);
+		timer = new Timer(TIMERSPEED, action);
 	}
 	
 	private void setupContextPanel() {
@@ -152,6 +156,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 				roundTime--;
 				if (count == 0) {
 					timer.stop();
+					goToEndPanel();
 				}
 			}
 		};
@@ -161,6 +166,43 @@ public class MainGameCode extends JFrame implements ActionListener{
 		this.pack();
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
+	}
+	
+	private void goToEndPanel() {
+        // remove main panel and show the end panel
+        getContentPane().removeAll();
+        setupEndPanel();
+        validate();
+        repaint();
+    }
+	
+	private void setupEndPanel() {
+	    JPanel endPanel = new JPanel();
+	    endPanel.setLayout(new BoxLayout(endPanel, BoxLayout.Y_AXIS));
+	    endPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+
+	    title = new JLabel("Game Over");
+
+	    text = new JTextArea("You suck.");
+
+	    quitButton = new JButton("QUIT");
+	    quitButton.addActionListener(new ActionListener(){
+	    	@Override
+            public void actionPerformed(ActionEvent e) {
+	    		System.exit(0);
+            }
+	    });
+
+	    endPanel.add(title);
+	    endPanel.add(Box.createVerticalStrut(10));
+	    endPanel.add(text);
+	    endPanel.add(Box.createVerticalStrut(10));
+	    endPanel.add(quitButton);
+
+	    this.add(endPanel);
+	    this.pack();
+	    this.setLocationRelativeTo(null);
+	    this.setVisible(true);
 	}
 	
 	private class DrawingPanel extends JPanel{
