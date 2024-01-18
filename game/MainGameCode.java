@@ -20,6 +20,10 @@ public class MainGameCode extends JFrame implements ActionListener{
 	// player name
 	private String name = "Judy";
 	
+	// create Character objects
+	Character po = new Character("Po", 21, "Chef", "A gluttonous but adorable panda.");
+	Character tramp = new Character("Tramp", 27, "Waiter", "A lovesick dog.");
+	
 	// variables
 	private JPanel mainPanel;
 	private DrawingPanel dp;
@@ -36,6 +40,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	// image declaration
 	private BufferedImage restaurantbg;
 	private BufferedImage poImage;
+	private BufferedImage trampImage;
 	
 	// context panel components
 	private JButton nextButton;
@@ -46,6 +51,8 @@ public class MainGameCode extends JFrame implements ActionListener{
     // end panel components
     private JButton quitButton;
     private JRadioButton choice1, choice2;
+    private ImageIcon poIcon;
+    private ImageIcon trampIcon;
     private JButton okayButton;
     private JLabel right, wrong;
 	
@@ -147,9 +154,11 @@ public class MainGameCode extends JFrame implements ActionListener{
 		// add background
 		restaurantbg = loadImage("/full_background_black.png");
 		
-		// create characters
-		Character po = new Character("Po", 21, "Chef", "A gluttonous but adorable panda.");
+		// load suspect images
+		po.setImagePath("/po.png");
 		poImage = loadImage("/po.png");
+		tramp.setImagePath("/tramp.png");
+		trampImage = loadImage("/tramp.png");
 		
 		action = new ActionListener() {
 			@Override
@@ -190,11 +199,24 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    JPanel endPanel = new JPanel();
 	    endPanel.setLayout(new BoxLayout(endPanel, BoxLayout.Y_AXIS));
 	    endPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+	    //endPanel.setBackground(Color.BLACK);
 
+	    // set all text to be white
+	    /*title.setForeground(Color.WHITE);
+	    right.setForeground(Color.WHITE);
+	    wrong.setForeground(Color.WHITE);*/
+	    
 	    title = new JLabel("Who was the murderer?");
-
-	    choice1 = new JRadioButton("Po");
-        choice2 = new JRadioButton("Tramp");
+	    
+	    // set ImageIcons to use as radio buttons
+	    poIcon = new ImageIcon();
+	    poIcon = po.getImageIcon();
+	    trampIcon = new ImageIcon();
+	    trampIcon = tramp.getImageIcon();
+	    
+	    // creat radio buttons
+	    choice1 = new JRadioButton("Po", poIcon);
+        choice2 = new JRadioButton("Tramp", trampIcon);
         
         right = new JLabel("You guessed right!");
         wrong = new JLabel("You guessed wrong!");
@@ -263,8 +285,11 @@ public class MainGameCode extends JFrame implements ActionListener{
 			// draw background
 			g2.drawImage(restaurantbg, 0, 0, PANW, PANH, null);
 			
-			// draw background
+			// draw Po
 			g2.drawImage(poImage, 0, 0, poImage.getWidth(), poImage.getHeight(), null);
+			
+			// draw Tramp
+			g2.drawImage(trampImage, 50, 50, trampImage.getWidth()-500, trampImage.getHeight()-500, null);
 		}
 	}
 
