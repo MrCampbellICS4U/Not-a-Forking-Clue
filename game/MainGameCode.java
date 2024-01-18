@@ -17,8 +17,9 @@ import java.io.*;
 
 public class MainGameCode extends JFrame implements ActionListener{
 
-	// player name
+	// player variables
 	private String name = "Judy";
+	private Rectangle judyBox;
 	
 	// create Character objects
 	Character po = new Character("Po", 21, "Chef", "A gluttonous but adorable panda.");
@@ -210,7 +211,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    trampIcon = new ImageIcon();
 	    trampIcon = tramp.getImageIcon();
 	    
-	    // creat radio buttons
+	    // create radio buttons
 	    choice1 = new JRadioButton("Po", poIcon);
         choice2 = new JRadioButton("Tramp", trampIcon);
         
