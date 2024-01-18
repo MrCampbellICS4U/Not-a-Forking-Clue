@@ -39,8 +39,6 @@ public class MainGameCode extends JFrame implements ActionListener{
 	
 	// image declaration
 	private BufferedImage restaurantbg;
-	private BufferedImage poImage;
-	private BufferedImage trampImage;
 	
 	// context panel components
 	private JButton nextButton;
@@ -154,20 +152,16 @@ public class MainGameCode extends JFrame implements ActionListener{
 		// add background
 		restaurantbg = loadImage("/full_background_black.png");
 		
-		// load suspect images
-		po.setImagePath("/po.png");
-		poImage = loadImage("/po.png");
-		tramp.setImagePath("/tramp.png");
-		trampImage = loadImage("/tramp.png");
-		
 		action = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				count--;
+				//count--;
 				roundTime--;
-				if (count == 0) {
-					timer.stop();
+				System.out.print(roundTime);
+				if (roundTime == 0) {
+					//timer.stop();
 					goToEndPanel();
+					timer.stop();
 				}
 			}
 		};
@@ -209,6 +203,8 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    title = new JLabel("Who was the murderer?");
 	    
 	    // set ImageIcons to use as radio buttons
+	    po.setImagePath("/po.png");
+		tramp.setImagePath("/tramp.png");
 	    poIcon = new ImageIcon();
 	    poIcon = po.getImageIcon();
 	    trampIcon = new ImageIcon();
@@ -261,7 +257,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    endPanel.add(title);
 	    endPanel.add(Box.createVerticalStrut(10));
 	    endPanel.add(choice1);
-        endPanel.add(choice2);
+        //endPanel.add(choice2);
         endPanel.add(Box.createVerticalStrut(10));
         endPanel.add(okayButton);
 	    endPanel.add(Box.createVerticalStrut(10));
@@ -284,12 +280,6 @@ public class MainGameCode extends JFrame implements ActionListener{
 			
 			// draw background
 			g2.drawImage(restaurantbg, 0, 0, PANW, PANH, null);
-			
-			// draw Po
-			g2.drawImage(poImage, 0, 0, poImage.getWidth(), poImage.getHeight(), null);
-			
-			// draw Tramp
-			g2.drawImage(trampImage, 50, 50, trampImage.getWidth()-500, trampImage.getHeight()-500, null);
 		}
 	}
 
