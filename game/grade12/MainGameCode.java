@@ -14,7 +14,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import java.io.*;
-
 public class MainGameCode extends JFrame implements ActionListener{
 
 	// player variables
@@ -36,10 +35,10 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private ActionListener action;
 	private int TIMERSPEED = 1000; // speed in seconds
 	private int count;
-	private int roundTime = 5; // time for each round
+	private int roundTime = 90; // time for each round
 	
 	// image declaration
-	private BufferedImage restaurantbg;
+	private BufferedImage restaurantbg, judyPlayer;
 	
 	// context panel components
 	private JButton nextButton;
@@ -81,11 +80,8 @@ public class MainGameCode extends JFrame implements ActionListener{
 		action = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//count--;
 				roundTime--;
-				System.out.print(roundTime);
 				if (roundTime == 0) {
-					//timer.stop();
 					goToEndPanel();
 					timer.stop();
 				}
@@ -165,6 +161,9 @@ public class MainGameCode extends JFrame implements ActionListener{
 		
 		// add background
 		restaurantbg = loadImage("/full_background_black.png");
+		
+		// add player
+		judyPlayer = loadImage("/judy_three_quarters.png");
 		
 		JButton hi = new JButton("hi");
 		mainPanel.add(hi);
@@ -280,6 +279,9 @@ public class MainGameCode extends JFrame implements ActionListener{
 			
 			// draw background
 			g2.drawImage(restaurantbg, 0, 0, PANW, PANH, null);
+			
+			// draw Judy
+			g2.drawImage(judyPlayer, 210, PANH-200, 100, 100, null);
 		}
 	}
 
