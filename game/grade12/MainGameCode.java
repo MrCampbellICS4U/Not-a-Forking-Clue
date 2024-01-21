@@ -9,7 +9,6 @@ package grade12;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -23,21 +22,23 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private Rectangle judyBox = new Rectangle(playerX, playerY, 100, 100); // updated judyBox
 	
 	// create Character objects
-	Character po = new Character("Po", 21, "Chef", "A gluttonous but adorable panda.");
-	Character tramp = new Character("Tramp", 27, "Waiter", "A lovesick dog.");
+	private Character po = new Character("Po", 21, "Chef", "A gluttonous but adorable panda.");
+	private Character tramp = new Character("Tramp", 27, "Waiter", "A lovesick dog.");
+	
+	// create Hint Rectangles
+	private int round = 0;
+	private Round currentRound;
+	private Rectangle clue1;
 	
 	// variables
 	private JPanel mainPanel;
 	private DrawingPanel dp;
-	private int round = 0;
-	private Round currentRound;
 	
 	// timer stuff
 	private Timer timer;
-	private ActionListener action;
 	private int TIMERSPEED = 1000; // speed in seconds
 	private int count;
-	private int roundTime = 90; // time for each round
+	private int roundTime = 5; // time for each round
 	
 	// image declaration
 	private BufferedImage restaurantbg, judyPlayer;
@@ -55,6 +56,7 @@ public class MainGameCode extends JFrame implements ActionListener{
     private ImageIcon trampIcon;
     private JButton guessButton;
     private JLabel right, wrong;
+    private JButton nextButton2;
 	
 	// panel width & height
 	private final static int PANW = 1440 - 700;
@@ -79,17 +81,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 		setupContextPanel();
 		
 		// set up timer
-		action = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				roundTime--;
-				if (roundTime == 0) {
-					goToEndPanel();
-					timer.stop();
-				}
-			}
-		};
-		timer = new Timer(TIMERSPEED, action);
+		timer = new Timer(TIMERSPEED, this);
 	}
 	
 	private void setupContextPanel() {
@@ -161,8 +153,18 @@ public class MainGameCode extends JFrame implements ActionListener{
 		dp = new DrawingPanel();
 		mainPanel.add(dp);
 		
-		// add background
-		restaurantbg = loadImage("/res/full_background_black.png");
+		// load different backgrounds based on the current round
+	    switch (round) {
+	        case 0:
+	            restaurantbg = loadImage("/res/round_1_background.png");
+	            break;
+	        case 1:
+	            restaurantbg = loadImage("/res/round_2_background.png");
+	            break;
+	        case 2:
+	            restaurantbg = loadImage("/res/round_3_background.png");
+	            break;
+	    }
 		
 		// add player
 		judyPlayer = loadImage("/res/judy_three_quarters.png");
@@ -217,6 +219,9 @@ public class MainGameCode extends JFrame implements ActionListener{
         // add guess button
         guessButton = new JButton("GUESS");
         
+        // add next button
+        nextButton2 = new JButton("NEXT");
+        
         // add Action Listener so that user can guess who is murderer
         guessButton.addActionListener(new ActionListener() {
             @Override
@@ -234,13 +239,21 @@ public class MainGameCode extends JFrame implements ActionListener{
                     endPanel.repaint();
 
                     // check which radio button is selected and display label accordingly
-                    if (choice1.isSelected()) {
+                    if (choice1.isSelected() && round < 2) {
+                        endPanel.add(right);
+                        endPanel.add(nextButton2);
+                        endPanel.add(quitButton);
+                    } else if (choice2.isSelected() && round < 2) {
+                        endPanel.add(wrong);
+                        endPanel.add(nextButton2);
+                        endPanel.add(quitButton);
+                    } else if (choice1.isSelected() && round == 2) {
                         endPanel.add(right);
                         endPanel.add(quitButton);
-                    } else if (choice2.isSelected()) {
+                    } else if (choice2.isSelected() && round == 2) {
                         endPanel.add(wrong);
                         endPanel.add(quitButton);
-                    }
+                    } 
                 } else {
                     // if neither radio button is selected, display a mildly threatening message
                     JOptionPane.showMessageDialog(endPanel, "Please select a suspect before proceeding.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -256,6 +269,16 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    		System.exit(0);
             }
 	    });
+	    
+	    // next button moves on to next round
+	    nextButton2.addActionListener(new ActionListener() {
+    		@Override
+    		public void actionPerformed(ActionEvent e) {
+    			round++;
+                resetRound();
+                goToMainPanel();
+    		}
+    	});
 
 	    endPanel.add(title);
 	    endPanel.add(Box.createVerticalStrut(10));
@@ -270,6 +293,12 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    this.pack();
 	    this.setLocationRelativeTo(null);
 	    this.setVisible(true);
+	}
+	
+	private void resetRound() {
+	    // reset timer and start the next round
+	    roundTime = 5;
+	    timer.restart();
 	}
 	
 	private class DrawingPanel extends JPanel {
@@ -344,15 +373,23 @@ public class MainGameCode extends JFrame implements ActionListener{
 
 	        // draw Judy
 	        g2.drawImage(judyPlayer, playerX, playerY, 100, 100, null);
+	        
+	        // draw clue
 	    }
 	}
 
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+		roundTime--;
+		if (roundTime == 0) {
+			goToEndPanel();
+			timer.stop();
+		}
 	}
+	
+	private void showMessageDialog(String title, String message) {
+        JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
+    }
 	
 	/**
 	 * loads an image from a file in the resource folder
