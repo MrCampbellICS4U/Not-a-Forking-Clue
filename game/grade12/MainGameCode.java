@@ -28,7 +28,9 @@ public class MainGameCode extends JFrame implements ActionListener{
 	// create Hint Rectangles
 	private int round = 0;
 	private Round currentRound;
-	private Rectangle clue1;
+	private Rectangle clue1, ghost1, riddle1;
+	private Rectangle clue2, ghost2, riddle2;
+	private Rectangle clue3, ghost3, riddle3;
 	
 	// variables
 	private JPanel mainPanel;
@@ -188,12 +190,6 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    JPanel endPanel = new JPanel();
 	    endPanel.setLayout(new BoxLayout(endPanel, BoxLayout.Y_AXIS));
 	    endPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
-	    //endPanel.setBackground(Color.BLACK);
-
-	    // set all text to be white
-	    /*title.setForeground(Color.WHITE);
-	    right.setForeground(Color.WHITE);
-	    wrong.setForeground(Color.WHITE);*/
 	    
 	    title = new JLabel("Who was the murderer?");
 	    
@@ -227,11 +223,12 @@ public class MainGameCode extends JFrame implements ActionListener{
             @Override
             public void actionPerformed(ActionEvent e) {
             	// check if a radio button is selected
-                if (choice1.isSelected() || choice2.isSelected()) {
+            	if (choice1.isSelected() || choice2.isSelected()) {
                     // if selected, remove from view
                     endPanel.remove(choice1);
                     endPanel.remove(choice2);
                     endPanel.remove(guessButton);
+                    endPanel.remove(nextButton2);
                     endPanel.remove(quitButton);
 
                     // repaint the container to reflect above changes
@@ -239,18 +236,10 @@ public class MainGameCode extends JFrame implements ActionListener{
                     endPanel.repaint();
 
                     // check which radio button is selected and display label accordingly
-                    if (choice1.isSelected() && round < 2) {
-                        endPanel.add(right);
-                        endPanel.add(nextButton2);
-                        endPanel.add(quitButton);
-                    } else if (choice2.isSelected() && round < 2) {
-                        endPanel.add(wrong);
-                        endPanel.add(nextButton2);
-                        endPanel.add(quitButton);
-                    } else if (choice1.isSelected() && round == 2) {
+                    if (choice1.isSelected()) {
                         endPanel.add(right);
                         endPanel.add(quitButton);
-                    } else if (choice2.isSelected() && round == 2) {
+                    } else if (choice2.isSelected()) {
                         endPanel.add(wrong);
                         endPanel.add(quitButton);
                     } 
@@ -286,6 +275,11 @@ public class MainGameCode extends JFrame implements ActionListener{
         //endPanel.add(choice2);
         endPanel.add(Box.createVerticalStrut(10));
         endPanel.add(guessButton);
+        // only allow user to click next button if there's still another round; they must guess on round 3
+        if (round < 2) {
+        	endPanel.add(Box.createVerticalStrut(10));
+        	endPanel.add(nextButton2);
+        }
 	    endPanel.add(Box.createVerticalStrut(10));
 	    endPanel.add(quitButton);
 
