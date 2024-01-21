@@ -18,7 +18,9 @@ public class MainGameCode extends JFrame implements ActionListener{
 
 	// player variables
 	private String name = "Judy";
-	private Rectangle judyBox;
+	private int playerX = 210; // initial X coordinate for Judy
+	private int playerY = PANH - 200; // initial Y coordinate for Judy
+	private Rectangle judyBox = new Rectangle(playerX, playerY, 100, 100); // updated judyBox
 	
 	// create Character objects
 	Character po = new Character("Po", 21, "Chef", "A gluttonous but adorable panda.");
@@ -51,7 +53,7 @@ public class MainGameCode extends JFrame implements ActionListener{
     private JRadioButton choice1, choice2;
     private ImageIcon poIcon;
     private ImageIcon trampIcon;
-    private JButton okayButton;
+    private JButton guessButton;
     private JLabel right, wrong;
 	
 	// panel width & height
@@ -160,18 +162,10 @@ public class MainGameCode extends JFrame implements ActionListener{
 		mainPanel.add(dp);
 		
 		// add background
-		restaurantbg = loadImage("/full_background_black.png");
+		restaurantbg = loadImage("/res/full_background_black.png");
 		
 		// add player
-		judyPlayer = loadImage("/judy_three_quarters.png");
-		
-		JButton hi = new JButton("hi");
-		mainPanel.add(hi);
-		hi.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				goToEndPanel();
-			}
-		});
+		judyPlayer = loadImage("/res/judy_three_quarters.png");
 		
 		// pack, centre, display
 		this.add(mainPanel);
@@ -202,8 +196,8 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    title = new JLabel("Who was the murderer?");
 	    
 	    // set ImageIcons to use as radio buttons
-	    po.setImagePath("/po.png");
-		tramp.setImagePath("/tramp.png");
+	    po.setImagePath("/res/po.png");
+		tramp.setImagePath("/res/tramp.png");
 	    poIcon = new ImageIcon();
 	    poIcon = po.getImageIcon();
 	    trampIcon = new ImageIcon();
@@ -219,33 +213,43 @@ public class MainGameCode extends JFrame implements ActionListener{
         ButtonGroup group = new ButtonGroup();
         group.add(choice1);
         group.add(choice2);
-
-        okayButton = new JButton("NEXT");
-        okayButton.addActionListener(new ActionListener() {
+        
+        // add guess button
+        guessButton = new JButton("GUESS");
+        
+        // add Action Listener so that user can guess who is murderer
+        guessButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // regardless of what button is pressed, remove choices from screen after they guess
-            	endPanel.remove(choice1);
-                endPanel.remove(choice2);
-                endPanel.remove(okayButton);
-                endPanel.remove(quitButton);
+            	// check if a radio button is selected
+                if (choice1.isSelected() || choice2.isSelected()) {
+                    // if selected, remove from view
+                    endPanel.remove(choice1);
+                    endPanel.remove(choice2);
+                    endPanel.remove(guessButton);
+                    endPanel.remove(quitButton);
 
-                // repaint the container to reflect changes
-                endPanel.revalidate();
-                endPanel.repaint();
-            	
-            	// check which radio button is selected and display label accordingly
-                if (choice1.isSelected()) {
-                    endPanel.add(right);
-                    endPanel.add(quitButton);
-                } else if (choice2.isSelected()) {
-                    endPanel.add(wrong);
-                    endPanel.add(quitButton);
+                    // repaint the container to reflect above changes
+                    endPanel.revalidate();
+                    endPanel.repaint();
+
+                    // check which radio button is selected and display label accordingly
+                    if (choice1.isSelected()) {
+                        endPanel.add(right);
+                        endPanel.add(quitButton);
+                    } else if (choice2.isSelected()) {
+                        endPanel.add(wrong);
+                        endPanel.add(quitButton);
+                    }
+                } else {
+                    // if neither radio button is selected, display a mildly threatening message
+                    JOptionPane.showMessageDialog(endPanel, "Please select a suspect before proceeding.", "Warning", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
 
-	    quitButton = new JButton("QUIT");
+	    // add quit button so user can exit game completely
+        quitButton = new JButton("QUIT");
 	    quitButton.addActionListener(new ActionListener(){
 	    	@Override
             public void actionPerformed(ActionEvent e) {
@@ -258,7 +262,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    endPanel.add(choice1);
         //endPanel.add(choice2);
         endPanel.add(Box.createVerticalStrut(10));
-        endPanel.add(okayButton);
+        endPanel.add(guessButton);
 	    endPanel.add(Box.createVerticalStrut(10));
 	    endPanel.add(quitButton);
 
@@ -268,22 +272,81 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    this.setVisible(true);
 	}
 	
-	private class DrawingPanel extends JPanel{
-		DrawingPanel(){
-			this.setPreferredSize(new Dimension(PANW, PANH));
-		}
-		
-		public void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			Graphics2D g2 = (Graphics2D)g;
-			
-			// draw background
-			g2.drawImage(restaurantbg, 0, 0, PANW, PANH, null);
-			
-			// draw Judy
-			g2.drawImage(judyPlayer, 210, PANH-200, 100, 100, null);
-		}
+	private class DrawingPanel extends JPanel {
+	    DrawingPanel() {
+	        // set preferred size + focus component
+	        this.setPreferredSize(new Dimension(PANW, PANH));
+	        this.setFocusable(true);
+
+	        // register key bindings
+	        InputMap inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
+	        ActionMap actionMap = getActionMap();
+
+	        // left, right, up, down buttons
+	        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "left");
+	        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "right");
+	        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
+	        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "down");
+
+	        // add ability to use WASD buttons as well
+	        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), "left");
+	        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), "right");
+	        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0), "up");
+	        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0), "down");
+
+	        actionMap.put("left", new AbstractAction() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                movePlayer(-10, 0);
+	            }
+	        });
+	        actionMap.put("right", new AbstractAction() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                movePlayer(10, 0);
+	            }
+	        });
+	        actionMap.put("up", new AbstractAction() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                movePlayer(0, -10);
+	            }
+	        });
+	        actionMap.put("down", new AbstractAction() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                movePlayer(0, 10);
+	            }
+	        });
+	    }
+
+	    private void movePlayer(int deltaX, int deltaY) {
+	        int newPlayerX = playerX + deltaX;
+	        int newPlayerY = playerY + deltaY;
+
+	        // Check if the new position is within the boundaries
+	        if (newPlayerX >= 0 && newPlayerX + judyBox.width <= PANW && newPlayerY >= 0 && newPlayerY + judyBox.height <= PANH) {
+	            // Update player position only if within boundaries
+	            playerX = newPlayerX;
+	            playerY = newPlayerY;
+	            judyBox.setLocation(playerX, playerY);
+	            repaint();
+	        }
+	    }
+
+	    @Override
+	    protected void paintComponent(Graphics g) {
+	        super.paintComponent(g);
+	        Graphics2D g2 = (Graphics2D) g;
+
+	        // draw background
+	        g2.drawImage(restaurantbg, 0, 0, PANW, PANH, null);
+
+	        // draw Judy
+	        g2.drawImage(judyPlayer, playerX, playerY, 100, 100, null);
+	    }
 	}
+
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
