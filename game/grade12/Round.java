@@ -9,22 +9,21 @@ package grade12;
 public class Round {
 	private int points = -1;
 	
+	// parallel arrays for coordinates of clue, ghost, and riddle images
+	private int[] clueX = {134, 183, 253};
+	private int[] clueY = {127, 660, 237};
+	private int[] ghostX = {296, 83, 545};
+	private int[] ghostY = {415, 255, 197};
+	private int[] riddleX = {517, 413, 466};
+	private int[] riddleY = {603, 134, 259};
 	
 	// parallel arrays for coordinates of clue, ghost, and riddle images
-	private int[] clueX = {50};
-	private int[] clueY = {50};
-	private int[] ghostX = {100};
-	private int[] ghostY = {100};
-	private int[] riddleX = {150};
-	private int[] riddleY = {150};
-	
-	// parallel arrays for coordinates of clue, ghost, and riddle images
-	private int[] clueW = {100};
-	private int[] clueH = {100};
-	private int[] ghostW = {100};
-	private int[] ghostH = {100};
-	private int[] riddleW = {100};
-	private int[] riddleH = {100};
+	private int[] clueW = {22, 23, 22};
+	private int[] clueH = {17, 20, 18};
+	private int[] ghostW = {54, 33, 45};
+	private int[] ghostH = {69, 65, 50};
+	private int[] riddleW = {56, 21, 20};
+	private int[] riddleH = {33, 21, 20};
 	
 	// create object for round
 	private Hint clue;
