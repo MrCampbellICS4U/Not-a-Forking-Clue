@@ -224,7 +224,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    }
 		
 		// add player
-		judyPlayer = loadImage("/res/judy_three_quarters.png");
+		judyPlayer = loadImage("/res/judy.png");
 		
 		// pack, centre, display
 		this.add(mainPanel);
