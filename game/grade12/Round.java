@@ -9,6 +9,7 @@ package grade12;
 public class Round {
 	private int points = -1;
 	
+	
 	// parallel arrays for coordinates of clue, ghost, and riddle images
 	private int[] clueX = {50};
 	private int[] clueY = {50};
