@@ -15,11 +15,15 @@ import javax.swing.*;
 import java.io.*;
 public class MainGameCode extends JFrame implements ActionListener{
 
+	// panel width & height
+	private final static int PANW = 1440 - 700;
+	private final static int PANH = 1440 - 700;
+		
 	// player variables
 	private String name = "Judy Hopps";
-	private int playerX = 210; // initial X coordinate for Judy
-	private int playerY = PANH - 200; // initial Y coordinate for Judy
-	private Rectangle judyBox = new Rectangle(playerX+28, playerY+40, 24, 35); // updated judyBox
+	static private int playerX = 210; // initial X coordinate for Judy
+	static private int playerY = PANH - 200; // initial Y coordinate for Judy
+	static private Rectangle judyBox = new Rectangle(playerX+28, playerY+40, 24, 35); // updated judyBox
 	private int jsx1=0, jsy1 = 0, jsx2=2000, jsy2=2000; //source coordinates for Judy (to flip when turn)
 	
 	// variables to track whether messages are shown
@@ -97,17 +101,13 @@ public class MainGameCode extends JFrame implements ActionListener{
     private JLabel right, wrong;
     private JButton nextButton2;
 	
-	// panel width & height
-	private final static int PANW = 1440 - 700;
-	private final static int PANH = 1440 - 700;
-	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				new MainGameCode();
 			}
 		});
-	}
+	}//end main(String[])
 	
 	/**
 	 * constructor
@@ -121,7 +121,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 		
 		// set up timer
 		timer = new Timer(TIMERSPEED, this);
-	}
+	}//end MainGameCode()
 	
 	private void setupContextPanel() {
 	    JPanel contextPanel = new JPanel();
@@ -172,7 +172,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    this.pack();
 	    this.setLocationRelativeTo(null);
 	    this.setVisible(true);
-	}
+	}//end setupContextPanel()
 
 
     private void goToMainPanel() {
@@ -182,7 +182,7 @@ public class MainGameCode extends JFrame implements ActionListener{
         validate();
         repaint();
         timer.start();
-    }
+    }//end goToMainPanel()
 	
 	private void setupMainPanel() {
 		// set up main panel (on top of background)
@@ -232,7 +232,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 		this.pack();
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
-	}
+	} //end setupMainPanel()
 	
 	private void goToEndPanel() {
         // remove main panel and show the end panel
@@ -240,7 +240,7 @@ public class MainGameCode extends JFrame implements ActionListener{
         setupEndPanel();
         validate();
         repaint();
-    }
+    }//end goToEndPanel()
 	
 	private void setupEndPanel() {
 	    JPanel endPanel = new JPanel();
@@ -344,13 +344,13 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    this.pack();
 	    this.setLocationRelativeTo(null);
 	    this.setVisible(true);
-	}
+	} //end setupEndPanel()
 	
 	private void resetRound() {
 	    // reset timer and start the next round
 	    roundTime = 90;
 	    timer.restart();
-	}
+	} //end resetRound()
 	
 	private class DrawingPanel extends JPanel {
 	    DrawingPanel() {
@@ -402,7 +402,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	                movePlayer(0, 10);
 	            }
 	        });
-	    }
+	    } //end DrawingPanel()
 
 	    private void movePlayer(int deltaX, int deltaY) {
 	        int newPlayerX = playerX + deltaX;
@@ -416,7 +416,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	            judyBox.setLocation(playerX+28, playerY+40);
 	            repaint();
 	        }
-	    }
+	    }//end movePlayer(int, int)
 
 	    @Override
 	    protected void paintComponent(Graphics g) {
@@ -428,6 +428,8 @@ public class MainGameCode extends JFrame implements ActionListener{
 
 	        // draw Judy
 	        g2.drawImage(judyPlayer, playerX, playerY, playerX+80, playerY+80, jsx1, jsy1, jsx2, jsy2, null);
+	        g2.setColor(Color.WHITE);
+	        g2.drawRect(0, 0, 95, 740);
 	        
 	        // check for collisions with hints
 	        if (judyBox.intersects(clueRect1) && !clueMessageShown) {
@@ -449,7 +451,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 
 	            riddleMessageShown = true;
 	        }
-	    }
+	    } //end paintComponent(Graphics)
 	}
 
 	@Override
@@ -459,7 +461,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 			goToEndPanel();
 			timer.stop();
 		}
-	}
+	}//end actionPerformed(ActionEvent)
 	
 	// add this method to handle the user's choice for the riddle
 	private void handleRiddleChoice(int choice) {
@@ -470,12 +472,12 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        showMessageDialog(null, "INCORRECT! The Cheshire Cat frowns eerily at you.");
 	        // Show a JLabel or perform other actions for the incorrect answer
 	    }
-	}
+	}//end handleRiddleChoice(int)
 	
 	private void showMessageDialog(String title, String message) {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
         this.repaint();
-    }
+    }//end showMessageDialog(String, String)
 	
 	/**
 	 * loads an image from a file in the resource folder
@@ -497,6 +499,20 @@ public class MainGameCode extends JFrame implements ActionListener{
 			JOptionPane.showMessageDialog(null, "An image failed to load: " + filename , "ERROR", JOptionPane.ERROR_MESSAGE);
 		}
 		return image;
+	}//end loadImage(String)
+	
+	/**
+	 * WRITE COMMENT LATER (this is for Barrier class)
+	 */
+	static public void setJudyBoxX(int x) {
+		judyBox.x=x;
+	}
+	
+	/**
+	 * WRITE COMMENT LATER (this is for Barrier class)
+	 */
+	static public void setJudyY(int y) {
+		judyBox.y=y;
 	}
 
 }
