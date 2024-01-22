@@ -9,7 +9,6 @@ package grade12;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -17,24 +16,59 @@ import java.io.*;
 public class MainGameCode extends JFrame implements ActionListener{
 
 	// player variables
-	private String name = "Judy";
+	private String name = "Judy Hopps";
 	private int playerX = 210; // initial X coordinate for Judy
 	private int playerY = PANH - 200; // initial Y coordinate for Judy
 	private Rectangle judyBox = new Rectangle(playerX, playerY, 100, 100); // updated judyBox
 	
 	// create Character objects
-	Character po = new Character("Po", 21, "Chef", "A gluttonous but adorable panda.");
-	Character tramp = new Character("Tramp", 27, "Waiter", "A lovesick dog.");
+	private Character po = new Character("Po", 21, "Chef", "A gluttonous but adorable panda.");
+	private Character tramp = new Character("Tramp", 27, "Waiter", "A lovesick dog.");
+	
+	// create Hint Rectangles
+	private Hint clue1 = new Hint("The fur found by the crime scene is fairly dark.");
+	private Hint ghost1 = new Hint("Today is not a murder mystery. It’s a gift. That’s why it’s called the present.");
+	private Riddle riddle1 = new Riddle("This is Master Oogway’s cherry blossom branch. The Cheshire Cat offers to tell you how it got there…if you can answer this riddle:\n"
+			+ "\n"
+			+ "Why is a raven like a drawing desk?\n", "Master Ping Xiao Po found the branch lying in the hallway and decided it would make an excellent garnish for his meal.",
+			"Because it can produce a few notes (though they are very flat)",
+			"They have quills in common",
+			"They are both black, if the desk is crafted from ebony",
+			"Because in French all the letters in bureau are contained in corbeau");
+	private Hint clue2 = new Hint("The floor is covered in juice.");
+	private Hint ghost2 = new Hint("I have no idea who got me! I was making a drink for the Cheshire Cat when, suddenly, everything went dark…");
+	private Riddle riddle2 = new Riddle("Jaq will tell you where Winnie the Pooh was before he died…if you can name what movie Jaq is from:\n",
+			"Snow White",
+			"Alice in Wonderland",
+			"Bambi",
+			"Cinderella",
+			"The Cheshire Cat asked Winnie to grab him a drink… despite having just come from the bar himself.");
+	private Hint clue3 = new Hint("The Cheshire Cat seems to be conspiring with Melman about something very important.");
+	private Hint ghost3 = new Hint("Right before I died, someone pulled my beanie over my head! I could hear heavy footsteps…");
+	private Riddle riddle3 = new Riddle("You seem to recall the Cheshire Cat mentioning something special about this beanie. Hmm… you might remember better if you can recall something else he said:\n"
+			+ "\n"
+			+ "Which of the following French words did the Cheshire Cat mention?\n",
+			"Meurtrier",
+			"Corbeau",
+			"Couteau",
+			"Cuisiner",
+			"Right after he asked you that silly riddle, the Cheshire Cat mentioned how badly he wanted that beanie for himself.");
+	private Rectangle clueRect1, ghostRect1, riddleRect1;
+	private Rectangle clueRect2, ghostRect2, riddleRect2;
+	private Rectangle clueRect3, ghostRect3, riddleRect3;
+	
+	// create Round objects
+	private int round = 0;
+	private Round round1 = new Round(clue1, ghost1, riddle1);
+	private Round round2;
+	private Round round3;
 	
 	// variables
 	private JPanel mainPanel;
 	private DrawingPanel dp;
-	private int round = 0;
-	private Round currentRound;
 	
 	// timer stuff
 	private Timer timer;
-	private ActionListener action;
 	private int TIMERSPEED = 1000; // speed in seconds
 	private int count;
 	private int roundTime = 90; // time for each round
@@ -55,6 +89,7 @@ public class MainGameCode extends JFrame implements ActionListener{
     private ImageIcon trampIcon;
     private JButton guessButton;
     private JLabel right, wrong;
+    private JButton nextButton2;
 	
 	// panel width & height
 	private final static int PANW = 1440 - 700;
@@ -79,17 +114,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 		setupContextPanel();
 		
 		// set up timer
-		action = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				roundTime--;
-				if (roundTime == 0) {
-					goToEndPanel();
-					timer.stop();
-				}
-			}
-		};
-		timer = new Timer(TIMERSPEED, action);
+		timer = new Timer(TIMERSPEED, this);
 	}
 	
 	private void setupContextPanel() {
@@ -161,11 +186,40 @@ public class MainGameCode extends JFrame implements ActionListener{
 		dp = new DrawingPanel();
 		mainPanel.add(dp);
 		
-		// add background
-		restaurantbg = loadImage("/res/full_background_black.png");
+		// load different backgrounds based on the current round
+	    switch (round) {
+	        case 0:
+	            restaurantbg = loadImage("/res/round_1_background.png");
+	            break;
+	        case 1:
+	            restaurantbg = loadImage("/res/round_2_background.png");
+	            break;
+	        case 2:
+	            restaurantbg = loadImage("/res/round_3_background.png");
+	            break;
+	    }
+	    
+	    // add clue Rectangles
+	    switch (round) {
+	    	case 0: 
+	    		clueRect1 = new Rectangle(round1.getClueX(round), round1.getClueY(round), round1.getClueW(round), round1.getClueH(round));
+	    		ghostRect1 = new Rectangle(round1.getGhostX(round), round1.getGhostY(round), round1.getGhostW(round), round1.getGhostH(round));
+	    		riddleRect1 = new Rectangle(round1.getRiddleX(round), round1.getRiddleY(round), round1.getRiddleW(round), round1.getGhostH(round));
+	    		break;
+	    	case 1:
+	    		clueRect2 = new Rectangle(round2.getClueX(round), round2.getClueY(round), round2.getClueW(round), round2.getClueH(round));
+	    		ghostRect2 = new Rectangle(round2.getGhostX(round), round2.getGhostY(round), round2.getGhostW(round), round2.getGhostH(round));
+	    		riddleRect2 = new Rectangle(round2.getRiddleX(round), round2.getRiddleY(round), round2.getRiddleW(round), round2.getGhostH(round));
+	    		break;
+	    	case 2:
+	    		clueRect3 = new Rectangle(round3.getClueX(round), round3.getClueY(round), round3.getClueW(round), round3.getClueH(round));
+	    		ghostRect3 = new Rectangle(round3.getGhostX(round), round3.getGhostY(round), round3.getGhostW(round), round3.getGhostH(round));
+	    		riddleRect3 = new Rectangle(round3.getRiddleX(round), round3.getRiddleY(round), round3.getRiddleW(round), round3.getGhostH(round));
+	    		break;
+	    }
 		
 		// add player
-		judyPlayer = loadImage("/res/judy_three_quarters.png");
+		judyPlayer = loadImage("/res/judy.png");
 		
 		// pack, centre, display
 		this.add(mainPanel);
@@ -186,12 +240,6 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    JPanel endPanel = new JPanel();
 	    endPanel.setLayout(new BoxLayout(endPanel, BoxLayout.Y_AXIS));
 	    endPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
-	    //endPanel.setBackground(Color.BLACK);
-
-	    // set all text to be white
-	    /*title.setForeground(Color.WHITE);
-	    right.setForeground(Color.WHITE);
-	    wrong.setForeground(Color.WHITE);*/
 	    
 	    title = new JLabel("Who was the murderer?");
 	    
@@ -207,6 +255,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    choice1 = new JRadioButton("Po", poIcon);
         choice2 = new JRadioButton("Tramp", trampIcon);
         
+        // labels to indicate whether user guess was correct
         right = new JLabel("You guessed right!");
         wrong = new JLabel("You guessed wrong!");
 
@@ -217,16 +266,20 @@ public class MainGameCode extends JFrame implements ActionListener{
         // add guess button
         guessButton = new JButton("GUESS");
         
+        // add next button
+        nextButton2 = new JButton("NEXT");
+        
         // add Action Listener so that user can guess who is murderer
         guessButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
             	// check if a radio button is selected
-                if (choice1.isSelected() || choice2.isSelected()) {
+            	if (choice1.isSelected() || choice2.isSelected()) {
                     // if selected, remove from view
                     endPanel.remove(choice1);
                     endPanel.remove(choice2);
                     endPanel.remove(guessButton);
+                    endPanel.remove(nextButton2);
                     endPanel.remove(quitButton);
 
                     // repaint the container to reflect above changes
@@ -240,7 +293,7 @@ public class MainGameCode extends JFrame implements ActionListener{
                     } else if (choice2.isSelected()) {
                         endPanel.add(wrong);
                         endPanel.add(quitButton);
-                    }
+                    } 
                 } else {
                     // if neither radio button is selected, display a mildly threatening message
                     JOptionPane.showMessageDialog(endPanel, "Please select a suspect before proceeding.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -256,6 +309,16 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    		System.exit(0);
             }
 	    });
+	    
+	    // next button moves on to next round
+	    nextButton2.addActionListener(new ActionListener() {
+    		@Override
+    		public void actionPerformed(ActionEvent e) {
+    			round++;
+                resetRound();
+                goToMainPanel();
+    		}
+    	});
 
 	    endPanel.add(title);
 	    endPanel.add(Box.createVerticalStrut(10));
@@ -263,6 +326,11 @@ public class MainGameCode extends JFrame implements ActionListener{
         //endPanel.add(choice2);
         endPanel.add(Box.createVerticalStrut(10));
         endPanel.add(guessButton);
+        // only allow user to click next button if there's still another round; they must guess on round 3
+        if (round < 2) {
+        	endPanel.add(Box.createVerticalStrut(10));
+        	endPanel.add(nextButton2);
+        }
 	    endPanel.add(Box.createVerticalStrut(10));
 	    endPanel.add(quitButton);
 
@@ -270,6 +338,12 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    this.pack();
 	    this.setLocationRelativeTo(null);
 	    this.setVisible(true);
+	}
+	
+	private void resetRound() {
+	    // reset timer and start the next round
+	    roundTime = 90;
+	    timer.restart();
 	}
 	
 	private class DrawingPanel extends JPanel {
@@ -344,15 +418,34 @@ public class MainGameCode extends JFrame implements ActionListener{
 
 	        // draw Judy
 	        g2.drawImage(judyPlayer, playerX, playerY, 100, 100, null);
+	        
+	        g2.setColor(Color.WHITE);
+	        g2.drawRect(0, 0, 100, 100);
+	        
+	        // check for collisions with hints
+	        if (judyBox.intersects(clueRect1)) {
+	            showMessageDialog(null, clue1.getMessage());
+	        } else if (judyBox.intersects(ghostRect1)) {
+	            showMessageDialog(null, ghost1.getMessage());
+	        } else if (judyBox.intersects(riddleRect1)) {
+	            //int choice = showConfirmDialog(null, "Answer the riddle:", "Riddle", YES_NO_OPTION);
+	            // Handle the riddle interaction based on the user's choice
+	        }
 	    }
 	}
 
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+		roundTime--;
+		if (roundTime == 0) {
+			goToEndPanel();
+			timer.stop();
+		}
 	}
+	
+	private void showMessageDialog(String title, String message) {
+        JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
+    }
 	
 	/**
 	 * loads an image from a file in the resource folder
