@@ -26,22 +26,40 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private Character tramp = new Character("Tramp", 27, "Waiter", "A lovesick dog.");
 	
 	// create Hint Rectangles
-	private Hint clue = new Hint("The fur found by the crime scene is fairly dark.");
-	private Hint ghost = new Hint("Today is not a murder mystery. It’s a gift. That’s why it’s called the present.");
-	private Riddle riddle = new Riddle("This is Master Oogway’s cherry blossom branch. The Cheshire Cat offers to tell you how it got there…if you can answer this riddle:\n"
+	private Hint clue1 = new Hint("The fur found by the crime scene is fairly dark.");
+	private Hint ghost1 = new Hint("Today is not a murder mystery. It’s a gift. That’s why it’s called the present.");
+	private Riddle riddle1 = new Riddle("This is Master Oogway’s cherry blossom branch. The Cheshire Cat offers to tell you how it got there…if you can answer this riddle:\n"
 			+ "\n"
 			+ "Why is a raven like a drawing desk?\n", "Master Ping Xiao Po found the branch lying in the hallway and decided it would make an excellent garnish for his meal.",
 			"Because it can produce a few notes (though they are very flat)",
 			"They have quills in common",
 			"They are both black, if the desk is crafted from ebony",
 			"Because in French all the letters in bureau are contained in corbeau");
+	private Hint clue2 = new Hint("The floor is covered in juice.");
+	private Hint ghost2 = new Hint("I have no idea who got me! I was making a drink for the Cheshire Cat when, suddenly, everything went dark…");
+	private Riddle riddle2 = new Riddle("Jaq will tell you where Winnie the Pooh was before he died…if you can name what movie Jaq is from:\n",
+			"Snow White",
+			"Alice in Wonderland",
+			"Bambi",
+			"Cinderella",
+			"The Cheshire Cat asked Winnie to grab him a drink… despite having just come from the bar himself.");
+	private Hint clue3 = new Hint("The Cheshire Cat seems to be conspiring with Melman about something very important.");
+	private Hint ghost3 = new Hint("Right before I died, someone pulled my beanie over my head! I could hear heavy footsteps…");
+	private Riddle riddle3 = new Riddle("You seem to recall the Cheshire Cat mentioning something special about this beanie. Hmm… you might remember better if you can recall something else he said:\n"
+			+ "\n"
+			+ "Which of the following French words did the Cheshire Cat mention?\n",
+			"Meurtrier",
+			"Corbeau",
+			"Couteau",
+			"Cuisiner",
+			"Right after he asked you that silly riddle, the Cheshire Cat mentioned how badly he wanted that beanie for himself.");
 	private Rectangle clueRect1, ghostRect1, riddleRect1;
 	private Rectangle clueRect2, ghostRect2, riddleRect2;
 	private Rectangle clueRect3, ghostRect3, riddleRect3;
 	
 	// create Round objects
 	private int round = 0;
-	private Round round1 = new Round(clue, ghost, riddle);
+	private Round round1 = new Round(clue1, ghost1, riddle1);
 	private Round round2;
 	private Round round3;
 	
@@ -403,9 +421,9 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        
 	        // check for collisions with hints
 	        if (judyBox.intersects(clueRect1)) {
-	            showMessageDialog(null, clue.getMessage());
+	            showMessageDialog(null, clue1.getMessage());
 	        } else if (judyBox.intersects(ghostRect1)) {
-	            showMessageDialog(null, ghost.getMessage());
+	            showMessageDialog(null, ghost1.getMessage());
 	        } else if (judyBox.intersects(riddleRect1)) {
 	            //int choice = showConfirmDialog(null, "Answer the riddle:", "Riddle", YES_NO_OPTION);
 	            // Handle the riddle interaction based on the user's choice

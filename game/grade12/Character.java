@@ -81,6 +81,21 @@ public class Character {
 		this.age = age;
 	}
 	
+	/**
+	 * getter method for character description
+	 * @return	character description
+	 */
+	public String getDescription() {
+		return this.description;
+	}
+	
+	/**
+	 * setter method for character description
+	 * @param description	character description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	public ImageIcon getImageIcon() {
         return imageIcon;
