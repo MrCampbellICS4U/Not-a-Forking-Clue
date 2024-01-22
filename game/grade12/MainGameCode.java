@@ -33,6 +33,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	// create Character objects
 	private Character po = new Character("Po", 21, "Chef", "A gluttonous but adorable panda.");
 	private Character tramp = new Character("Tramp", 27, "Waiter", "A lovesick dog.");
+	private Character deadPerson = new Character("deadPerson", 27, "rawr", "RAWRRRR");
 	
 	// Create Character lists
 	private ArrayList<Character> alive = new ArrayList<Character>();
@@ -135,6 +136,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 		// add characters
 		alive.add(po);
 		alive.add(tramp);
+		dead.add(deadPerson);
 	}
 	
 	private void setupContextPanel() {
@@ -382,7 +384,8 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    suspectList.setLayout(new BoxLayout(suspectList, BoxLayout.Y_AXIS));
 	    suspectList.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
 
-	    JLabel who = new JLabel("Suspect List");
+	    JLabel who = new JLabel("You may only guess ONCE");
+		suspectList.add(who);
 
 		// Strikethrough effect
 		Font font = new Font("helvetica", Font.PLAIN, 12);
@@ -390,18 +393,40 @@ public class MainGameCode extends JFrame implements ActionListener{
 		attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
 		Font newFont = new Font(attributes);
 
+		JRadioButton aliveSus;
 		for (Character sus: alive) {
-			 suspectList.add(new JRadioButton(sus.getName()));
+			aliveSus = new JRadioButton(sus.getName());
+			aliveSus.setActionCommand(sus.getName());
+			aliveSus.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String name = e.getActionCommand();
+					if (name == "Po") showMessageDialog("You Win!!", "Po was the murderer! You win!");
+					else showMessageDialog("WRONG", "You arrested an innocent animal");
+					System.exit(0);
+				}
+			});
+			suspectList.add(aliveSus);
 		}
 
 		JRadioButton deadSus;
+		ButtonGroup deads = new ButtonGroup();
 		for (Character sus: dead) {
 			deadSus = new JRadioButton(sus.getName());
+			deads.add(deadSus);
+			deadSus.setActionCommand("dead");
+			deadSus.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String name = e.getActionCommand();
+					if (name == "dead") showMessageDialog("UMMM", "Sorry, you can't arrest a dead animal.");
+					deads.clearSelection();
+				}
+			});
 			deadSus.setFont(newFont);
 			suspectList.add(deadSus);
 		}
 
-		
 		susFrame.add(suspectList);
 	    susFrame.pack();
 	    susFrame.setLocationRelativeTo(null);
