@@ -419,6 +419,9 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        // draw Judy
 	        g2.drawImage(judyPlayer, playerX, playerY, 100, 100, null);
 	        
+	        g2.setColor(Color.WHITE);
+	        g2.drawRect(0, 0, 100, 100);
+	        
 	        // check for collisions with hints
 	        if (judyBox.intersects(clueRect1)) {
 	            showMessageDialog(null, clue1.getMessage());
