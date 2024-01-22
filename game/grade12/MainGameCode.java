@@ -21,6 +21,11 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private int playerY = PANH - 200; // initial Y coordinate for Judy
 	private Rectangle judyBox = new Rectangle(playerX, playerY, 100, 100); // updated judyBox
 	
+	// variables to track whether messages are shown
+    private boolean clueMessageShown = false;
+    private boolean ghostMessageShown = false;
+    private boolean riddleMessageShown = false;
+	
 	// create Character objects
 	private Character po = new Character("Po", 21, "Chef", "A gluttonous but adorable panda.");
 	private Character tramp = new Character("Tramp", 27, "Waiter", "A lovesick dog.");
@@ -60,8 +65,8 @@ public class MainGameCode extends JFrame implements ActionListener{
 	// create Round objects
 	private int round = 0;
 	private Round round1 = new Round(clue1, ghost1, riddle1);
-	private Round round2;
-	private Round round3;
+	private Round round2 = new Round(clue2, ghost2, riddle2);
+	private Round round3 = new Round(clue3, ghost3, riddle3);
 	
 	// variables
 	private JPanel mainPanel;
@@ -419,17 +424,25 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        // draw Judy
 	        g2.drawImage(judyPlayer, playerX, playerY, 100, 100, null);
 	        
-	        g2.setColor(Color.WHITE);
-	        g2.drawRect(0, 0, 100, 100);
-	        
 	        // check for collisions with hints
-	        if (judyBox.intersects(clueRect1)) {
+	        if (judyBox.intersects(clueRect1) && !clueMessageShown) {
 	            showMessageDialog(null, clue1.getMessage());
-	        } else if (judyBox.intersects(ghostRect1)) {
+	            clueMessageShown = true;
+	        } else if (judyBox.intersects(ghostRect1) && !ghostMessageShown) {
 	            showMessageDialog(null, ghost1.getMessage());
-	        } else if (judyBox.intersects(riddleRect1)) {
-	            //int choice = showConfirmDialog(null, "Answer the riddle:", "Riddle", YES_NO_OPTION);
-	            // Handle the riddle interaction based on the user's choice
+	            ghostMessageShown = true;
+	        } else if (judyBox.intersects(riddleRect1) && !riddleMessageShown) {
+	            // show a dialog with four radio buttons for the riddle
+	            int choice = JOptionPane.showOptionDialog(
+	                    null, "Why is a raven like a drawing desk?", "Riddle",
+	                    JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+	                    null, riddle1.getAnswers(), riddle1.getAnswers()
+	            );
+
+	            // handle the user's choice
+	            handleRiddleChoice(choice);
+
+	            riddleMessageShown = true;
 	        }
 	    }
 	}
@@ -443,8 +456,20 @@ public class MainGameCode extends JFrame implements ActionListener{
 		}
 	}
 	
+	// add this method to handle the user's choice for the riddle
+	private void handleRiddleChoice(int choice) {
+	    if (choice == 0) { // Option 'a'
+	        showMessageDialog(null, "CORRECT! Master Ping Xiao Po found the branch lying in the hallway and decided it would make an excellent garnish for his meal.");
+	        // Show a JLabel or perform other actions for the correct answer
+	    } else {
+	        showMessageDialog(null, "INCORRECT! The Cheshire Cat frowns eerily at you.");
+	        // Show a JLabel or perform other actions for the incorrect answer
+	    }
+	}
+	
 	private void showMessageDialog(String title, String message) {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
+        this.repaint();
     }
 	
 	/**
