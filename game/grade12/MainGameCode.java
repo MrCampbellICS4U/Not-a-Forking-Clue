@@ -408,7 +408,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        int newPlayerX = playerX + deltaX;
 	        int newPlayerY = playerY + deltaY;
 
-	        // Check if the new position is within the boundaries
+	        // check if the new position is within the boundaries
 	        if (newPlayerX >= 0 && newPlayerX + judyBox.width <= PANW && newPlayerY >= 0 && newPlayerY + judyBox.height <= PANH) {
 	            // Update player position only if within boundaries
 	            playerX = newPlayerX;
@@ -433,9 +433,11 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        if (judyBox.intersects(clueRect1) && !clueMessageShown) {
 	            showMessageDialog(null, clue1.getMessage());
 	            clueMessageShown = true;
+	            repaint();
 	        } else if (judyBox.intersects(ghostRect1) && !ghostMessageShown) {
 	            showMessageDialog(null, ghost1.getMessage());
 	            ghostMessageShown = true;
+	            repaint();
 	        } else if (judyBox.intersects(riddleRect1) && !riddleMessageShown) {
 	            // show a dialog with four radio buttons for the riddle
 	            int choice = JOptionPane.showOptionDialog(
@@ -465,16 +467,13 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private void handleRiddleChoice(int choice) {
 	    if (choice == 0) { // Option 'a'
 	        showMessageDialog(null, "CORRECT! Master Ping Xiao Po found the branch lying in the hallway and decided it would make an excellent garnish for his meal.");
-	        // Show a JLabel or perform other actions for the correct answer
 	    } else {
 	        showMessageDialog(null, "INCORRECT! The Cheshire Cat frowns eerily at you.");
-	        // Show a JLabel or perform other actions for the incorrect answer
 	    }
 	}
 	
 	private void showMessageDialog(String title, String message) {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
-        this.repaint();
     }
 	
 	/**
