@@ -16,7 +16,7 @@ import java.io.*;
 public class MainGameCode extends JFrame implements ActionListener{
 
 	// player variables
-	private String name = "Judy";
+	private String name = "Judy Hopps";
 	private int playerX = 210; // initial X coordinate for Judy
 	private int playerY = PANH - 200; // initial Y coordinate for Judy
 	private Rectangle judyBox = new Rectangle(playerX, playerY, 100, 100); // updated judyBox
@@ -26,11 +26,42 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private Character tramp = new Character("Tramp", 27, "Waiter", "A lovesick dog.");
 	
 	// create Hint Rectangles
+	private Hint clue1 = new Hint("The fur found by the crime scene is fairly dark.");
+	private Hint ghost1 = new Hint("Today is not a murder mystery. It’s a gift. That’s why it’s called the present.");
+	private Riddle riddle1 = new Riddle("This is Master Oogway’s cherry blossom branch. The Cheshire Cat offers to tell you how it got there…if you can answer this riddle:\n"
+			+ "\n"
+			+ "Why is a raven like a drawing desk?\n", "Master Ping Xiao Po found the branch lying in the hallway and decided it would make an excellent garnish for his meal.",
+			"Because it can produce a few notes (though they are very flat)",
+			"They have quills in common",
+			"They are both black, if the desk is crafted from ebony",
+			"Because in French all the letters in bureau are contained in corbeau");
+	private Hint clue2 = new Hint("The floor is covered in juice.");
+	private Hint ghost2 = new Hint("I have no idea who got me! I was making a drink for the Cheshire Cat when, suddenly, everything went dark…");
+	private Riddle riddle2 = new Riddle("Jaq will tell you where Winnie the Pooh was before he died…if you can name what movie Jaq is from:\n",
+			"Snow White",
+			"Alice in Wonderland",
+			"Bambi",
+			"Cinderella",
+			"The Cheshire Cat asked Winnie to grab him a drink… despite having just come from the bar himself.");
+	private Hint clue3 = new Hint("The Cheshire Cat seems to be conspiring with Melman about something very important.");
+	private Hint ghost3 = new Hint("Right before I died, someone pulled my beanie over my head! I could hear heavy footsteps…");
+	private Riddle riddle3 = new Riddle("You seem to recall the Cheshire Cat mentioning something special about this beanie. Hmm… you might remember better if you can recall something else he said:\n"
+			+ "\n"
+			+ "Which of the following French words did the Cheshire Cat mention?\n",
+			"Meurtrier",
+			"Corbeau",
+			"Couteau",
+			"Cuisiner",
+			"Right after he asked you that silly riddle, the Cheshire Cat mentioned how badly he wanted that beanie for himself.");
+	private Rectangle clueRect1, ghostRect1, riddleRect1;
+	private Rectangle clueRect2, ghostRect2, riddleRect2;
+	private Rectangle clueRect3, ghostRect3, riddleRect3;
+	
+	// create Round objects
 	private int round = 0;
-	private Round currentRound;
-	private Rectangle clue1, ghost1, riddle1;
-	private Rectangle clue2, ghost2, riddle2;
-	private Rectangle clue3, ghost3, riddle3;
+	private Round round1 = new Round(clue1, ghost1, riddle1);
+	private Round round2;
+	private Round round3;
 	
 	// variables
 	private JPanel mainPanel;
@@ -40,7 +71,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private Timer timer;
 	private int TIMERSPEED = 1000; // speed in seconds
 	private int count;
-	private int roundTime = 5; // time for each round
+	private int roundTime = 90; // time for each round
 	
 	// image declaration
 	private BufferedImage restaurantbg, judyPlayer;
@@ -167,6 +198,25 @@ public class MainGameCode extends JFrame implements ActionListener{
 	            restaurantbg = loadImage("/res/round_3_background.png");
 	            break;
 	    }
+	    
+	    // add clue Rectangles
+	    switch (round) {
+	    	case 0: 
+	    		clueRect1 = new Rectangle(round1.getClueX(round), round1.getClueY(round), round1.getClueW(round), round1.getClueH(round));
+	    		ghostRect1 = new Rectangle(round1.getGhostX(round), round1.getGhostY(round), round1.getGhostW(round), round1.getGhostH(round));
+	    		riddleRect1 = new Rectangle(round1.getRiddleX(round), round1.getRiddleY(round), round1.getRiddleW(round), round1.getGhostH(round));
+	    		break;
+	    	case 1:
+	    		clueRect2 = new Rectangle(round2.getClueX(round), round2.getClueY(round), round2.getClueW(round), round2.getClueH(round));
+	    		ghostRect2 = new Rectangle(round2.getGhostX(round), round2.getGhostY(round), round2.getGhostW(round), round2.getGhostH(round));
+	    		riddleRect2 = new Rectangle(round2.getRiddleX(round), round2.getRiddleY(round), round2.getRiddleW(round), round2.getGhostH(round));
+	    		break;
+	    	case 2:
+	    		clueRect3 = new Rectangle(round3.getClueX(round), round3.getClueY(round), round3.getClueW(round), round3.getClueH(round));
+	    		ghostRect3 = new Rectangle(round3.getGhostX(round), round3.getGhostY(round), round3.getGhostW(round), round3.getGhostH(round));
+	    		riddleRect3 = new Rectangle(round3.getRiddleX(round), round3.getRiddleY(round), round3.getRiddleW(round), round3.getGhostH(round));
+	    		break;
+	    }
 		
 		// add player
 		judyPlayer = loadImage("/res/judy_three_quarters.png");
@@ -205,6 +255,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    choice1 = new JRadioButton("Po", poIcon);
         choice2 = new JRadioButton("Tramp", trampIcon);
         
+        // labels to indicate whether user guess was correct
         right = new JLabel("You guessed right!");
         wrong = new JLabel("You guessed wrong!");
 
@@ -291,7 +342,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	
 	private void resetRound() {
 	    // reset timer and start the next round
-	    roundTime = 5;
+	    roundTime = 90;
 	    timer.restart();
 	}
 	
@@ -368,7 +419,15 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        // draw Judy
 	        g2.drawImage(judyPlayer, playerX, playerY, 100, 100, null);
 	        
-	        // draw clue
+	        // check for collisions with hints
+	        if (judyBox.intersects(clueRect1)) {
+	            showMessageDialog(null, clue1.getMessage());
+	        } else if (judyBox.intersects(ghostRect1)) {
+	            showMessageDialog(null, ghost1.getMessage());
+	        } else if (judyBox.intersects(riddleRect1)) {
+	            //int choice = showConfirmDialog(null, "Answer the riddle:", "Riddle", YES_NO_OPTION);
+	            // Handle the riddle interaction based on the user's choice
+	        }
 	    }
 	}
 

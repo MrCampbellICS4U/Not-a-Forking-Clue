@@ -17,6 +17,14 @@ public class Round {
 	private int[] riddleX = {150};
 	private int[] riddleY = {150};
 	
+	// parallel arrays for coordinates of clue, ghost, and riddle images
+	private int[] clueW = {100};
+	private int[] clueH = {100};
+	private int[] ghostW = {100};
+	private int[] ghostH = {100};
+	private int[] riddleW = {100};
+	private int[] riddleH = {100};
+	
 	// create object for round
 	private Hint clue;
 	private Hint ghost;
@@ -149,6 +157,60 @@ public class Round {
      */
     public int getRiddleY(int round) {
     	return riddleY[round];
+    }
+    
+    /**
+     * getter method for clue width
+     * @param round		round number
+     * @return	width of clue
+     */
+    public int getClueW(int round) {
+    	return clueW[round];
+    }
+    
+    /**
+     * getter method for clue height
+     * @param round		round number
+     * @return	height of clue
+     */
+    public int getClueH(int round) {
+    	return clueH[round];
+    }
+    
+    /**
+     * getter method for ghost width
+     * @param round		round number
+     * @return	width of appropriate ghost
+     */
+    public int getGhostW(int round) {
+    	return ghostW[round];
+    }
+    
+    /**
+     * getter method for ghost height
+     * @param round		round number
+     * @return	height of appropriate ghost
+     */
+    public int getGhostH(int round) {
+    	return ghostH[round];
+    }
+    
+    /**
+     * getter method for riddle width
+     * @param round		round number
+     * @return	width of appropriate riddle
+     */
+    public int getRiddleW(int round) {
+    	return riddleW[round];
+    }
+    
+    /**
+     * getter method for riddle height
+     * @param round		round number
+     * @return	height of appropriate riddle
+     */
+    public int getRiddleH(int round) {
+    	return riddleH[round];
     }
 
 }
