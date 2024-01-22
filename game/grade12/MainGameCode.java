@@ -6,13 +6,16 @@
  */
 package grade12;
 
+import java.awt.font.TextAttribute;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.Timer;
 
 import java.io.*;
+import java.util.*;
 public class MainGameCode extends JFrame implements ActionListener{
 
 	// player variables
@@ -30,7 +33,12 @@ public class MainGameCode extends JFrame implements ActionListener{
 	// create Character objects
 	private Character po = new Character("Po", 21, "Chef", "A gluttonous but adorable panda.");
 	private Character tramp = new Character("Tramp", 27, "Waiter", "A lovesick dog.");
+	private Character deadPerson = new Character("deadPerson", 27, "rawr", "RAWRRRR");
 	
+	// Create Character lists
+	private ArrayList<Character> alive = new ArrayList<Character>();
+	private ArrayList<Character> dead = new ArrayList<Character>();
+
 	// create Hint Rectangles
 	private Hint clue1 = new Hint("The fur found by the crime scene is fairly dark.");
 	private Hint ghost1 = new Hint("Today is not a murder mystery. It’s a gift. That’s why it’s called the present.");
@@ -87,6 +95,9 @@ public class MainGameCode extends JFrame implements ActionListener{
     private JLabel title;
     private JTextArea context;
     private JScrollPane scrollPane;
+
+	// main panel components
+	private JButton arrestButton;
     
     // end panel components
     private JButton quitButton;
@@ -121,6 +132,11 @@ public class MainGameCode extends JFrame implements ActionListener{
 		
 		// set up timer
 		timer = new Timer(TIMERSPEED, this);
+
+		// add characters
+		alive.add(po);
+		alive.add(tramp);
+		dead.add(deadPerson);
 	}
 	
 	private void setupContextPanel() {
@@ -226,6 +242,15 @@ public class MainGameCode extends JFrame implements ActionListener{
 		
 		// add player
 		judyPlayer = loadImage("/res/judy.png");
+
+		arrestButton = new JButton("ARREST");
+		arrestButton.addActionListener(new ActionListener(){
+	    	@Override
+            public void actionPerformed(ActionEvent e) {
+	    		goToSuspectList();
+            }
+	    });
+		mainPanel.add(arrestButton);
 		
 		// pack, centre, display
 		this.add(mainPanel);
@@ -346,6 +371,68 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    this.setVisible(true);
 	}
 	
+	private void goToSuspectList() {
+        // show the suspect list
+        setupSuspectList();
+        validate();
+        //repaint();
+    }
+	
+	private void setupSuspectList() {
+		JFrame susFrame = new JFrame("Suspect List");
+	    JPanel suspectList = new JPanel();
+	    suspectList.setLayout(new BoxLayout(suspectList, BoxLayout.Y_AXIS));
+	    suspectList.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+
+	    JLabel who = new JLabel("You may only guess ONCE");
+		suspectList.add(who);
+
+		// Strikethrough effect
+		Font font = new Font("helvetica", Font.PLAIN, 12);
+		Map  attributes = font.getAttributes();
+		attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+		Font newFont = new Font(attributes);
+
+		JRadioButton aliveSus;
+		for (Character sus: alive) {
+			aliveSus = new JRadioButton(sus.getName());
+			aliveSus.setActionCommand(sus.getName());
+			aliveSus.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String name = e.getActionCommand();
+					if (name == "Po") showMessageDialog("You Win!!", "Po was the murderer! You win!");
+					else showMessageDialog("WRONG", "You arrested an innocent animal");
+					System.exit(0);
+				}
+			});
+			suspectList.add(aliveSus);
+		}
+
+		JRadioButton deadSus;
+		ButtonGroup deads = new ButtonGroup();
+		for (Character sus: dead) {
+			deadSus = new JRadioButton(sus.getName());
+			deads.add(deadSus);
+			deadSus.setActionCommand("dead");
+			deadSus.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String name = e.getActionCommand();
+					if (name == "dead") showMessageDialog("UMMM", "Sorry, you can't arrest a dead animal.");
+					deads.clearSelection();
+				}
+			});
+			deadSus.setFont(newFont);
+			suspectList.add(deadSus);
+		}
+
+		susFrame.add(suspectList);
+	    susFrame.pack();
+	    susFrame.setLocationRelativeTo(null);
+	    susFrame.setVisible(true);
+	}
+
 	private void resetRound() {
 	    // reset timer and start the next round
 	    roundTime = 90;
