@@ -19,7 +19,8 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private String name = "Judy Hopps";
 	private int playerX = 210; // initial X coordinate for Judy
 	private int playerY = PANH - 200; // initial Y coordinate for Judy
-	private Rectangle judyBox = new Rectangle(playerX, playerY, 100, 100); // updated judyBox
+	private Rectangle judyBox = new Rectangle(playerX, playerY, 80, 80); // updated judyBox
+	private int jsx1=0, jsy1 = 0, jsx2=2000, jsy2=2000; //source coordinates for Judy (to flip when turn)
 	
 	// create Character objects
 	private Character po = new Character("Po", 21, "Chef", "A gluttonous but adorable panda.");
@@ -372,11 +373,15 @@ public class MainGameCode extends JFrame implements ActionListener{
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
 	                movePlayer(-10, 0);
+	                jsx1=0; //flip judy's view
+	                jsx2=2000;
 	            }
 	        });
 	        actionMap.put("right", new AbstractAction() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
+	            	jsx1=2000; //flip judy's view
+	            	jsx2=0;
 	                movePlayer(10, 0);
 	            }
 	        });
@@ -417,7 +422,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        g2.drawImage(restaurantbg, 0, 0, PANW, PANH, null);
 
 	        // draw Judy
-	        g2.drawImage(judyPlayer, playerX, playerY, 100, 100, null);
+	        g2.drawImage(judyPlayer, playerX, playerY, playerX+80, playerY+80, jsx1, jsy1, jsx2, jsy2, null);
 	        
 	        // check for collisions with hints
 	        if (judyBox.intersects(clueRect1)) {
