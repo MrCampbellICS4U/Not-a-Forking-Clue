@@ -6,17 +6,8 @@
  */
 package grade12;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-
 public class Hint {
 	private String message;
-	private String imagePath;
-	private ImageIcon imageIcon;
 	
 	/**
 	 * Class constructor
@@ -42,45 +33,6 @@ public class Hint {
 		this.message = message;
 	}
 	
-	/**
-	 * Getter method for the ImageIcon
-	 * @return	the image of the Hint
-	 */
-	public ImageIcon getImageIcon() {
-        return imageIcon;
-	}
-	
-	/**
-	 * Setter method for the ImagePath (to load the image)
-	 * @param imagePath		String path of desired image
-	 */
-	public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-        loadImageIcon();  // call method to load the image when the path is set
-    }
-	
-	/**
-	 * loads an image from a file in the resource folder (but for an ImageIcon)
-	 * @param filename	name of the file
-	 * @return	returns a ImageIcon connected to filename
-	 */
-	private void loadImageIcon() {
-	    ImageIcon icon = null;    
-	    java.net.URL imageURL = this.getClass().getResource(imagePath);
-	    
-	    if (imageURL != null) {
-	        try {
-	            icon = new ImageIcon(imageURL);
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    } else {
-	        JOptionPane.showMessageDialog(null, "An image failed to load: " + imagePath, "ERROR", JOptionPane.ERROR_MESSAGE);
-	    }
-	    
-	    imageIcon = icon;
-	}
-	
 }
 
 class Riddle extends Hint {
@@ -91,7 +43,6 @@ class Riddle extends Hint {
 	/**
 	 * Class constructor
 	 * @param prompt	String riddle prompt for user to solve
-	 * @param message	String helpful message for player
 	 * @param ansA		String for first option of answers
 	 * @param ansB		String for second option of answers
 	 * @param ansC		String for third option of answers
