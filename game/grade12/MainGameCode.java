@@ -19,7 +19,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private String name = "Judy Hopps";
 	private int playerX = 210; // initial X coordinate for Judy
 	private int playerY = PANH - 200; // initial Y coordinate for Judy
-	private Rectangle judyBox = new Rectangle(playerX, playerY, 80, 80); // updated judyBox
+	private Rectangle judyBox = new Rectangle(playerX+28, playerY+40, 24, 35); // updated judyBox
 	private int jsx1=0, jsy1 = 0, jsx2=2000, jsy2=2000; //source coordinates for Judy (to flip when turn)
 	
 	// variables to track whether messages are shown
@@ -413,7 +413,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	            // Update player position only if within boundaries
 	            playerX = newPlayerX;
 	            playerY = newPlayerY;
-	            judyBox.setLocation(playerX, playerY);
+	            judyBox.setLocation(playerX+28, playerY+40);
 	            repaint();
 	        }
 	    }
