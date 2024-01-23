@@ -143,8 +143,6 @@ public class MainGameCode extends JFrame implements ActionListener{
 		timer = new Timer(TIMERSPEED, this);
 		// add characters
 		alive.add(po);
-		alive.add(tramp);
-		dead.add(deadPerson);
 	}//end MainGameCode()
 	
 	/**
@@ -298,7 +296,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    endPanel.setLayout(new BoxLayout(endPanel, BoxLayout.Y_AXIS));
 	    endPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
 	    
-	    title = new JLabel("Who was the murderer?"); //prompt player to guess
+	    title = new JLabel("Do you know who the murderer is?"); //prompt player to guess
 	    
 	    // set ImageIcons to use as radio buttons
 	    po.setImagePath("/res/po.png");
@@ -321,10 +319,10 @@ public class MainGameCode extends JFrame implements ActionListener{
         group.add(choice2);
         
         // add guess button
-        guessButton = new JButton("GUESS");
+        guessButton = new JButton("GUESS NOW");
         
         // add next button
-        nextButton2 = new JButton("NEXT");
+        nextButton2 = new JButton("NEXT ROUND");
         
         // add Action Listener so that user can guess who is murderer
         guessButton.addActionListener(new ActionListener() {
@@ -558,13 +556,16 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        g2.drawImage(restaurantbg, 0, 0, PANW, PANH, null);
 
 	        // draw Judy
-	        g2.drawImage(judyPlayer, playerX, playerY, playerX+80, playerY+80, jsx1, jsy1, jsx2, jsy2, null);
+	        if (Barrier.judyIsVisible(playerX+28,playerY+40)==true) {
+	        	g2.drawImage(judyPlayer, playerX, playerY, playerX+80, playerY+80, jsx1, jsy1, jsx2, jsy2, null);
+	        }
 	      
 	        /*
 	         * TEST BARRIER COORDINATES
 	         */
 	        //g2.setColor(Color.WHITE);
-	        //g2.drawRect(486, 240, 122, 200);
+	        //g2.drawRect(355, 616, 45, 33);
+	        
 	        // check for collisions with hints for round1
 	        if (round == 0 && judyBox.intersects(clueRect1) && !clueMessageShown) {
 	            showMessageDialog(null, clue1.getMessage());
