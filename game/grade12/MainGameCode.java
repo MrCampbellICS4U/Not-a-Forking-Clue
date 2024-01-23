@@ -124,7 +124,7 @@ public class MainGameCode extends JFrame implements ActionListener{
     // endPanel imageicon labels + audio
     private ImageIcon stars0, stars1, stars2, stars3;
     private JLabel zeroStar, oneStar, twoStar, threeStar;
-    private String songFilePath = "res/newjeanssong.wav";
+    private String songFilePath = "res/bgmusic.wav";
 	private Clip clip;
 	
 	public static void main(String[] args) {
@@ -197,7 +197,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    contextPanel.add(Box.createVerticalStrut(10));
 	    contextPanel.add(nextButton);
 
-	 // pack, center, display
+	    // pack, center, display
 	    this.add(contextPanel);
 	    this.pack();
 	    this.setLocationRelativeTo(null);
@@ -333,13 +333,13 @@ public class MainGameCode extends JFrame implements ActionListener{
         wrong = new JLabel("You failed to find the murderer.");
         
         // labels to show user score
-        stars0 = loadImageIcon("/zerostar.png");
+        stars0 = loadImageIcon("/res/zerostar.png");
 		zeroStar = new JLabel(stars0);
-		stars1 = loadImageIcon("/onestar.png");
+		stars1 = loadImageIcon("/res/onestar.png");
 		oneStar = new JLabel(stars1);
-		stars2 = loadImageIcon("/twostar.png");
+		stars2 = loadImageIcon("/res/twostar.png");
 		twoStar = new JLabel(stars2);
-		stars3 = loadImageIcon("/threestar.png");
+		stars3 = loadImageIcon("/res/threestar.png");
 		threeStar = new JLabel(stars3);
 
         ButtonGroup group = new ButtonGroup();
