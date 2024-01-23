@@ -74,7 +74,8 @@ public class MainGameCode extends JFrame implements ActionListener{
 			"Cinderella");
 	private Hint clue3 = new Hint("The Cheshire Cat seems to be conspiring with Melman about something very important.");
 	private Hint ghost3 = new Hint("Right before I died, someone pulled my beanie over my head! I could hear heavy footsteps…");
-	private Riddle riddle3 = new Riddle("You seem to recall the Cheshire Cat mentioning something special about this beanie. Hmm… you might remember better if you can recall something else he said:\n"
+	private Riddle riddle3 = new Riddle("You seem to recall the Cheshire Cat mentioning something special about this beanie. \n"
+			+ "Hmm… you might remember better if you can recall something else he said:\n"
 			+ "\n"
 			+ "Which of the following French words did the Cheshire Cat mention?\n",
 			"CORRECT! Right after he asked you that silly riddle, the Cheshire Cat mentioned how badly he wanted that beanie for himself.",
@@ -99,7 +100,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	// timer stuff
 	private Timer timer;
 	private int TIMERSPEED = 1000; // speed in seconds
-	private int roundTime = 10; // time for each round
+	private int roundTime = 90; // time for each round
 	
 	// image declaration
 	private BufferedImage restaurantbg, judyPlayer;
@@ -115,7 +116,7 @@ public class MainGameCode extends JFrame implements ActionListener{
     
     // end panel components
     private JButton quitButton;
-    private JRadioButton choice1, choice2;
+    private JRadioButton choice1, choice2, choice3, choice4;
     private ImageIcon poIcon, poohIcon, jaqIcon, cheshireIcon;
     private JButton guessButton;
     private JLabel right, wrong;
@@ -143,8 +144,6 @@ public class MainGameCode extends JFrame implements ActionListener{
 		timer = new Timer(TIMERSPEED, this);
 		// add characters
 		alive.add(po);
-		alive.add(tramp);
-		dead.add(deadPerson);
 	}//end MainGameCode()
 	
 	/**
@@ -295,7 +294,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	 */
 	private void setupEndPanel() {
 	    JPanel endPanel = new JPanel();
-	    endPanel.setLayout(new BoxLayout(endPanel, BoxLayout.Y_AXIS));
+	    endPanel.setLayout(new BoxLayout(endPanel, BoxLayout.X_AXIS));
 	    endPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
 	    
 	    title = new JLabel("Who was the murderer?"); //prompt player to guess
@@ -304,13 +303,21 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    po.setImagePath("/res/po.png");
 	    poIcon = new ImageIcon();
 	    poIcon = po.getImageIcon();
-		pooh.setImagePath("/res/tramp.png");
+		pooh.setImagePath("/res/pooh.png");
 	    poohIcon = new ImageIcon();
 	    poohIcon = pooh.getImageIcon();
+	    jaq.setImagePath("/res/jaq.png");
+	    jaqIcon = new ImageIcon();
+	    jaqIcon = jaq.getImageIcon();
+	    cheshire.setImagePath("/res/cheshirecat.png");
+	    cheshireIcon = new ImageIcon();
+	    cheshireIcon = cheshire.getImageIcon();
 	    
 	    // create radio buttons
 	    choice1 = new JRadioButton("Po", poIcon);
         choice2 = new JRadioButton("Winnie the Pooh", poohIcon);
+        choice3 = new JRadioButton("Jaq", jaqIcon);
+        choice4 = new JRadioButton("Cheshire", cheshireIcon);
         
         // labels to indicate whether user guess was correct
         right = new JLabel("You guessed right!");
@@ -319,6 +326,8 @@ public class MainGameCode extends JFrame implements ActionListener{
         ButtonGroup group = new ButtonGroup();
         group.add(choice1);
         group.add(choice2);
+        group.add(choice3);
+        group.add(choice4);
         
         // add guess button
         guessButton = new JButton("GUESS");
@@ -331,7 +340,7 @@ public class MainGameCode extends JFrame implements ActionListener{
             @Override
             public void actionPerformed(ActionEvent e) {
             	// check if a radio button is selected
-            	if (choice1.isSelected() || choice2.isSelected()) {
+            	if (choice1.isSelected() || choice2.isSelected() || choice3.isSelected() || choice4.isSelected()) {
                     // if selected, remove from view
                     endPanel.remove(choice1);
                     endPanel.remove(choice2);
@@ -347,7 +356,7 @@ public class MainGameCode extends JFrame implements ActionListener{
                     if (choice1.isSelected()) {
                         endPanel.add(right);
                         endPanel.add(quitButton);
-                    } else if (choice2.isSelected()) {
+                    } else if (choice2.isSelected() || choice3.isSelected() || choice4.isSelected()) {
                         endPanel.add(wrong);
                         endPanel.add(quitButton);
                     } 
@@ -379,7 +388,9 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    endPanel.add(title);
 	    endPanel.add(Box.createVerticalStrut(10));
 	    endPanel.add(choice1);
-        //endPanel.add(choice2);
+        endPanel.add(choice2);
+        endPanel.add(choice3);
+        endPanel.add(choice4);
         endPanel.add(Box.createVerticalStrut(10));
         endPanel.add(guessButton);
         // only allow user to click next button if there's still another round; they must guess on round 3
@@ -573,7 +584,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        } else if (round == 0 && judyBox.intersects(ghostRect1) && !ghostMessageShown) {
 	            showMessageDialog(null, ghost1.getMessage());
 	            ghostMessageShown = true;
-	            repaint();
+	            // repaint();
 	        } else if (round == 0 && judyBox.intersects(riddleRect1) && !riddleMessageShown) {
 	        	// make formatted message with answers displayed vertically
 	            String message = riddle1.getPrompt();
@@ -598,11 +609,11 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        if (round == 1 && judyBox.intersects(clueRect2) && !clueMessageShown) {
 	            showMessageDialog(null, clue2.getMessage());
 	            clueMessageShown = true;
-	            repaint();
+	            //dp.repaint();
 	        } else if (round == 1 && judyBox.intersects(ghostRect2) && !ghostMessageShown) {
 	            showMessageDialog(null, ghost2.getMessage());
 	            ghostMessageShown = true;
-	            repaint();
+	            //dp.repaint();
 	        } else if (round == 1 && judyBox.intersects(riddleRect2) && !riddleMessageShown) {
 	            // make formatted message with answers displayed vertically
 	            String message = riddle2.getPrompt();
@@ -621,6 +632,9 @@ public class MainGameCode extends JFrame implements ActionListener{
 	            handleRiddleChoice(choice);
 
 	            riddleMessageShown = true;
+	            
+	            // when user interacts with messagedialog, repaint the screen
+	            SwingUtilities.invokeLater(() -> repaint());
 	        }
 	        
 	        // check for collisions with hints for round 3
@@ -705,7 +719,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private void showMessageDialog(String title, String message) {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
         this.repaint();
-  }//end showMessageDialog(String, String)
+	}//end showMessageDialog(String, String)
 	
 	/**
 	 * Loads an image from a file in the resource folder
