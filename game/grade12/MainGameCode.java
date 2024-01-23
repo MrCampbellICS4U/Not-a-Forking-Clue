@@ -35,9 +35,18 @@ public class MainGameCode extends JFrame implements ActionListener{
     private boolean riddleMessageShown = false;
 	
 	// create Character objects
-	private Character po = new Character("Po", 21, "Chef", "A gluttonous but adorable panda.");
-	private Character tramp = new Character("Tramp", 27, "Waiter", "A lovesick dog.");
-	private Character deadPerson = new Character("deadPerson", 27, "rawr", "RAWRRRR");
+
+	private Character po = new Character("Master Ping Xiao Po", 21, "Chef", "Master Ping Xiao Po has been the head "
+			+ "chef at Campbell’s Cuisine for a few months now. He certainly has access to an arsenal of weapons…");
+	private Character pooh = new Character("Winnie the Pooh", 24, "Host", "Winnie the Pooh is a very new addition to the "
+			+ "staff at Campbell’s Cuisine…apparently he’s been hopping from job to job for the past several years. "
+			+ "He’s never held a position higher than a host.");
+	private Character jaq = new Character("Jaq", 19, "Patron", "Jaq loves to sample the finest restaurants in "
+			+ "London, ON. Unfortunately—or perhaps, rather suspiciously—most of his favourite establishments have "
+			+ "been struck by the Cereal Killer. Campbell’s Cuisine seems to be the last one standing…");
+	private Character cheshire = new Character("Cheshire", 27, "Waiter", "The Cheshire Cat has been a waiter at "
+			+ "Campbell’s Cuisine for many years now. He’s incredibly sly and devious…certainly capable of "
+			+ "organized crime.");
 	
 	// Create Character lists
 	private ArrayList<Character> alive = new ArrayList<Character>();
@@ -46,9 +55,10 @@ public class MainGameCode extends JFrame implements ActionListener{
 	// create Hint Rectangles
 	private Hint clue1 = new Hint("The fur found by the crime scene is fairly dark.");
 	private Hint ghost1 = new Hint("Today is not a murder mystery. It’s a gift. That’s why it’s called the present.");
-	private Riddle riddle1 = new Riddle("This is Master Oogway’s cherry blossom branch. The Cheshire Cat offers to tell you how it got there…if you can answer this riddle:\n"
-			+ "\n"
-			+ "Why is a raven like a drawing desk?\n", "Master Ping Xiao Po found the branch lying in the hallway and decided it would make an excellent garnish for his meal.",
+	private Riddle riddle1 = new Riddle("This is Master Oogway’s cherry blossom branch. \n"
+			+ "The Cheshire Cat offers to tell you how it got there…if you can answer this riddle:\n\n"
+			+ "Why is a raven like a drawing desk?\n", 
+			"CORRECT! Master Ping Xiao Po found the branch lying in the hallway and decided it would make an excellent garnish for his meal.",
 			"Because it can produce a few notes (though they are very flat)",
 			"They have quills in common",
 			"They are both black, if the desk is crafted from ebony",
@@ -56,21 +66,21 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private Hint clue2 = new Hint("The floor is covered in juice.");
 	private Hint ghost2 = new Hint("I have no idea who got me! I was making a drink for the Cheshire Cat when, suddenly, everything went dark…");
 	private Riddle riddle2 = new Riddle("Jaq will tell you where Winnie the Pooh was before he died…if you can name what movie Jaq is from:\n",
+			"CORRECT! The Cheshire Cat asked Winnie to grab him a drink… despite having just come from the bar himself.",
 			"Snow White",
 			"Alice in Wonderland",
 			"Bambi",
-			"Cinderella",
-			"The Cheshire Cat asked Winnie to grab him a drink… despite having just come from the bar himself.");
+			"Cinderella");
 	private Hint clue3 = new Hint("The Cheshire Cat seems to be conspiring with Melman about something very important.");
 	private Hint ghost3 = new Hint("Right before I died, someone pulled my beanie over my head! I could hear heavy footsteps…");
 	private Riddle riddle3 = new Riddle("You seem to recall the Cheshire Cat mentioning something special about this beanie. Hmm… you might remember better if you can recall something else he said:\n"
 			+ "\n"
 			+ "Which of the following French words did the Cheshire Cat mention?\n",
+			"CORRECT! Right after he asked you that silly riddle, the Cheshire Cat mentioned how badly he wanted that beanie for himself.",
 			"Meurtrier",
 			"Corbeau",
 			"Couteau",
-			"Cuisiner",
-			"Right after he asked you that silly riddle, the Cheshire Cat mentioned how badly he wanted that beanie for himself.");
+			"Cuisiner");
 	private Rectangle clueRect1, ghostRect1, riddleRect1;
 	private Rectangle clueRect2, ghostRect2, riddleRect2;
 	private Rectangle clueRect3, ghostRect3, riddleRect3;
@@ -88,8 +98,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	// timer stuff
 	private Timer timer;
 	private int TIMERSPEED = 1000; // speed in seconds
-	private int count;
-	private int roundTime = 90; // time for each round
+	private int roundTime = 10; // time for each round
 	
 	// image declaration
 	private BufferedImage restaurantbg, judyPlayer;
@@ -106,8 +115,7 @@ public class MainGameCode extends JFrame implements ActionListener{
     // end panel components
     private JButton quitButton;
     private JRadioButton choice1, choice2;
-    private ImageIcon poIcon;
-    private ImageIcon trampIcon;
+    private ImageIcon poIcon, poohIcon, jaqIcon, cheshireIcon;
     private JButton guessButton;
     private JLabel right, wrong;
     private JButton nextButton2;
@@ -293,15 +301,15 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    
 	    // set ImageIcons to use as radio buttons
 	    po.setImagePath("/res/po.png");
-		tramp.setImagePath("/res/tramp.png");
 	    poIcon = new ImageIcon();
 	    poIcon = po.getImageIcon();
-	    trampIcon = new ImageIcon();
-	    trampIcon = tramp.getImageIcon();
+		pooh.setImagePath("/res/tramp.png");
+	    poohIcon = new ImageIcon();
+	    poohIcon = pooh.getImageIcon();
 	    
 	    // create radio buttons
 	    choice1 = new JRadioButton("Po", poIcon);
-        choice2 = new JRadioButton("Tramp", trampIcon);
+        choice2 = new JRadioButton("Winnie the Pooh", poohIcon);
         
         // labels to indicate whether user guess was correct
         right = new JLabel("You guessed right!");
@@ -362,7 +370,6 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    nextButton2.addActionListener(new ActionListener() {
     		@Override
     		public void actionPerformed(ActionEvent e) {
-    			round++;
                 resetRound();
                 goToMainPanel();
     		}
@@ -455,7 +462,12 @@ public class MainGameCode extends JFrame implements ActionListener{
 	 * Reset the timer and start the next round
 	 */
 	private void resetRound() {
+	    // reset timer and start the next round
 	    roundTime = 90;
+	    round++;
+	    clueMessageShown = false;
+	    ghostMessageShown = false;
+	    riddleMessageShown = false;
 	    timer.restart();
 	} //end resetRound()
 	
@@ -521,6 +533,10 @@ public class MainGameCode extends JFrame implements ActionListener{
 	     * @param deltaY	int number of y coordinates to move
 	     */
 	    private void movePlayer(int deltaX, int deltaY) {
+	        int newPlayerX = playerX + deltaX;
+	        int newPlayerY = playerY + deltaY;
+
+	        // check if the new position is within the boundaries
 	        playerX += deltaX;
 	        playerY += deltaY;
 	        Barrier.checkWalls(playerX, playerY); //ensure within boundaries
@@ -539,19 +555,27 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        // draw Judy
 	        g2.drawImage(judyPlayer, playerX, playerY, playerX+80, playerY+80, jsx1, jsy1, jsx2, jsy2, null);
 	        
-	        // check for collisions with hints
-	        if (judyBox.intersects(clueRect1) && !clueMessageShown) {
+	        // check for collisions with hints for round1
+	        if (round == 0 && judyBox.intersects(clueRect1) && !clueMessageShown) {
 	            showMessageDialog(null, clue1.getMessage());
 	            clueMessageShown = true;
-	        } else if (judyBox.intersects(ghostRect1) && !ghostMessageShown) {
+	            repaint();
+	        } else if (round == 0 && judyBox.intersects(ghostRect1) && !ghostMessageShown) {
 	            showMessageDialog(null, ghost1.getMessage());
 	            ghostMessageShown = true;
-	        } else if (judyBox.intersects(riddleRect1) && !riddleMessageShown) {
-	            // show a dialog with four radio buttons for the riddle
+	            repaint();
+	        } else if (round == 0 && judyBox.intersects(riddleRect1) && !riddleMessageShown) {
+	        	// make formatted message with answers displayed vertically
+	            String message = riddle1.getPrompt();
+	            for (int i = 0; i < riddle1.getAnswers().length; i++) {
+	                message += (char) ('a' + i) + ". " + riddle1.getAnswers()[i] + "\n";
+	            }
+
+	            // show the option dialog with the formatted message
 	            int choice = JOptionPane.showOptionDialog(
-	                    null, "Why is a raven like a drawing desk?", "Riddle",
+	                    null, message, "Riddle",
 	                    JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
-	                    null, riddle1.getAnswers(), riddle1.getAnswers()
+	                    null, riddle1.getAlpha(), null
 	            );
 
 	            // handle the user's choice
@@ -559,6 +583,65 @@ public class MainGameCode extends JFrame implements ActionListener{
 
 	            riddleMessageShown = true;
 	        }
+	        
+	        // check for collisions with hints for round 2
+	        if (round == 1 && judyBox.intersects(clueRect2) && !clueMessageShown) {
+	            showMessageDialog(null, clue2.getMessage());
+	            clueMessageShown = true;
+	            repaint();
+	        } else if (round == 1 && judyBox.intersects(ghostRect2) && !ghostMessageShown) {
+	            showMessageDialog(null, ghost2.getMessage());
+	            ghostMessageShown = true;
+	            repaint();
+	        } else if (round == 1 && judyBox.intersects(riddleRect2) && !riddleMessageShown) {
+	            // make formatted message with answers displayed vertically
+	            String message = riddle2.getPrompt();
+	            for (int i = 0; i < riddle2.getAnswers().length; i++) {
+	                message += (char) ('a' + i) + ". " + riddle2.getAnswers()[i] + "\n";
+	            }
+
+	            // show the option dialog with the formatted message
+	            int choice = JOptionPane.showOptionDialog(
+	                    null, message, "Riddle",
+	                    JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+	                    null, riddle2.getAlpha(), null
+	            );
+
+	            // handle the user's choice
+	            handleRiddleChoice(choice);
+
+	            riddleMessageShown = true;
+	        }
+	        
+	        // check for collisions with hints for round 3
+	        if (round == 2 && judyBox.intersects(clueRect3) && !clueMessageShown) {
+	            showMessageDialog(null, clue3.getMessage());
+	            clueMessageShown = true;
+	            repaint();
+	        } else if (round == 2 && judyBox.intersects(ghostRect3) && !ghostMessageShown) {
+	            showMessageDialog(null, ghost3.getMessage());
+	            ghostMessageShown = true;
+	            repaint();
+	        } else if (round == 2 && judyBox.intersects(riddleRect3) && !riddleMessageShown) {
+	            // make formatted message with answers displayed vertically
+	            String message = riddle3.getPrompt();
+	            for (int i = 0; i < riddle3.getAnswers().length; i++) {
+	                message += (char) ('a' + i) + ". " + riddle3.getAnswers()[i] + "\n";
+	            }
+
+	            // show the option dialog with the formatted message
+	            int choice = JOptionPane.showOptionDialog(
+	                    null, message, "Riddle",
+	                    JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+	                    null, riddle3.getAlpha(), null
+	            );
+
+	            // handle the user's choice
+	            handleRiddleChoice(choice);
+
+	            riddleMessageShown = true;
+	        }
+        
 	    } //end paintComponent(Graphics)
 	}
 
@@ -576,12 +659,31 @@ public class MainGameCode extends JFrame implements ActionListener{
 	 * @param choice	int choice for whichever answer the player picked
 	 */
 	private void handleRiddleChoice(int choice) {
-	    if (choice == 0) { // Option 'a'
-	        showMessageDialog(null, "CORRECT! Master Ping Xiao Po found the branch lying in the hallway and decided it would make an excellent garnish for his meal.");
-	        // Show a JLabel or perform other actions for the correct answer
-	    } else {
-	        showMessageDialog(null, "INCORRECT! The Cheshire Cat frowns eerily at you.");
-	        // Show a JLabel or perform other actions for the incorrect answer
+		// Round 1
+	    if (round == 0) {
+	        if (choice == 3) { // Option 'a'
+	            showMessageDialog(null, riddle1.getMessage());
+	        } else {
+	            showMessageDialog(null, "INCORRECT! The Cheshire Cat frowns eerily at you.");
+	        }
+	    }
+	    // Round 2
+	    if (round == 1) {
+	        if (choice == 0) { // Option 'd'
+	            showMessageDialog(null, riddle2.getMessage());
+	        } else {
+	            showMessageDialog(null, "INCORRECT…\n"
+	                    + "Jaq doesn’t remember!\n");
+	        }
+	    }
+	    // Round 3
+	    if (round == 2) {
+	        if (choice == 2) { // Option 'b'
+	            showMessageDialog(null, riddle3.getMessage());
+	        } else {
+	            showMessageDialog(null, "INCORRECT…\n"
+	                    + "You have no recollection of what he said.\n");
+	        }
 	    }
 	}//end handleRiddleChoice(int)
 	
@@ -593,7 +695,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private void showMessageDialog(String title, String message) {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
         this.repaint();
-    }//end showMessageDialog(String, String)
+  }//end showMessageDialog(String, String)
 	
 	/**
 	 * Loads an image from a file in the resource folder
