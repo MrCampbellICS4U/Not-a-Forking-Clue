@@ -6,19 +6,56 @@
  */
 package grade12;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 public class Barrier {
+	//create Rectangle chunks (Judy cannot cross)
+	private static Rectangle bar = new Rectangle(145,218,132,80);
+	private static Rectangle leftWall = new Rectangle(0,317,180,400); //large chunk in bar + hallway
+	private static Rectangle smallChunk1 = new Rectangle(181,384,17,65); //small chunk left of the biggest door
+	private static Rectangle smallChunk2 = new Rectangle(261,384,96,65); //small chunk right of the biggest door
+	private static Rectangle smallChunk3 = new Rectangle(291,340,66,43); //small chunk above smallChunk2
+	private static Rectangle largeChunk1 = new Rectangle(358,340,300,166); //large chunk covering Po + walls
+	private static Rectangle smallChunk4 = new Rectangle(358,507,55,108); //small chunk below largeChunk1
+	private static Rectangle smallChunk5 = new Rectangle(440, 507, 130, 73); //small chunk below largeChunk1
+	private static Rectangle largeChunk2 = new Rectangle(311,111,118,198); //large chunk right of the bar
+	private static Rectangle chair = new Rectangle(465, 248, 20, 42);
+	private static Rectangle tableChunk1 = new Rectangle(486, 240, 122, 200); //south table
+	private static Rectangle tableChunk2 = new Rectangle(466, 100, 135, 100); //north table
+	private static Rectangle smallChunk6 = new Rectangle(609, 320, 35, 50); //small chunk above largeChunk1
+	private static Rectangle smallChunk7 = new Rectangle(358, 650, 40, 70); //small chunk below smallChunk4
+	private static Rectangle kitchenTable = new Rectangle(458, 612, 200, 100);
+	
+	//array to check barriers
+	private static Rectangle[] barriers = {bar, leftWall, smallChunk1, smallChunk2, smallChunk3, largeChunk1,
+			smallChunk4, smallChunk5, largeChunk2, chair, tableChunk1, tableChunk2, smallChunk6, smallChunk7, kitchenTable};
+	
 	/**
-	 * COMMENT LATER
-	 * @param playerX
-	 * @param playerY
+	 * Prevents Judy from entering certain chunks on the map
+	 * @param playerX	int updated x coordinate of Judy
+	 * @param playerY	int updated y coordinate of Judy
+	 * @param ogX		int original x coordinate of Judy
+	 * @param ogY		int original y coordinate of Judy
 	 */
-	public static void checkWalls(int playerX, int playerY){
+	public static void checkWalls(int playerX, int playerY, int ogX, int ogY){
+		/*
+		 * CHECK AGAINST FURTHEST GAME WALLS
+		 */
 		if (playerX<67) MainGameCode.setPlayerX(67); //check against barrier, farthest left
 		if (playerY<110) MainGameCode.setPlayerY(110); //farthest up
 		if (playerX+52>640) MainGameCode.setPlayerX(640-52); //farthest right
-		if (playerY+75>700) MainGameCode.setPlayerY(700-75); //farthest down
+		if (playerY+75>680) MainGameCode.setPlayerY(680-75); //farthest down
+		
+		/*
+		 * CHECK AGAINST CHUNKS (furniture + walls)
+		 */
+		for (int i=0; i<barriers.length; i++) {
+			if (barriers[i].contains(playerX+28, playerY+75) || barriers[i].contains(playerX+52, playerY+75)) {
+				MainGameCode.setPlayerX(ogX);
+				MainGameCode.setPlayerY(ogY);
+			}
+		}
+		
 	}//end checkWalls(int, int)
 
 }

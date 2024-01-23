@@ -16,6 +16,7 @@ import javax.swing.Timer;
 
 import java.io.*;
 import java.util.*;
+
 public class MainGameCode extends JFrame implements ActionListener{
 
 	// panel width & height
@@ -389,13 +390,19 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    this.setVisible(true);
 	} //end setupEndPanel()
 	
+	/**
+	 * Display the suspect list visual
+	 */
 	private void goToSuspectList() {
         // show the suspect list
         setupSuspectList();
         validate();
         //repaint();
-    }
+    }// end goToSuspectList()
 	
+	/**
+	 * Set up suspect list visuals & GUI
+	 */
 	private void setupSuspectList() {
 		JFrame susFrame = new JFrame("Suspect List");
 	    JPanel suspectList = new JPanel();
@@ -449,7 +456,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    susFrame.pack();
 	    susFrame.setLocationRelativeTo(null);
 	    susFrame.setVisible(true);
-	}
+	}//end setupSuspectList()
   
   /**
 	 * Reset the timer and start the next round
@@ -521,9 +528,11 @@ public class MainGameCode extends JFrame implements ActionListener{
 	     * @param deltaY	int number of y coordinates to move
 	     */
 	    private void movePlayer(int deltaX, int deltaY) {
-	        playerX += deltaX;
+	        int ogX = playerX; //to check collisions with furniture
+	        int ogY = playerY; //"
+	    	playerX += deltaX;
 	        playerY += deltaY;
-	        Barrier.checkWalls(playerX, playerY); //ensure within boundaries
+	        Barrier.checkWalls(playerX, playerY, ogX, ogY); //ensure within boundaries
 	        judyBox.setLocation(playerX+28, playerY+40);
 	        repaint();
 	    }//end movePlayer(int, int)
@@ -538,6 +547,12 @@ public class MainGameCode extends JFrame implements ActionListener{
 
 	        // draw Judy
 	        g2.drawImage(judyPlayer, playerX, playerY, playerX+80, playerY+80, jsx1, jsy1, jsx2, jsy2, null);
+	        
+	        /*
+	         * TEST BARRIER COORDINATES
+	         */
+	        //g2.setColor(Color.WHITE);
+	        //g2.drawRect(486, 240, 122, 200);
 	        
 	        // check for collisions with hints
 	        if (judyBox.intersects(clueRect1) && !clueMessageShown) {
