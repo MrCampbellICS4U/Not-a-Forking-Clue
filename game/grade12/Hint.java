@@ -8,6 +8,7 @@ package grade12;
 
 public class Hint {
 	private String message;
+	private String[] alpha = {"d", "c", "b", "a"};
 	
 	/**
 	 * Class constructor
@@ -31,6 +32,14 @@ public class Hint {
 	 */
 	public void setMessage(String message) {
 		this.message = message;
+	}
+	
+	/**
+	 * Getter method for alpha choices
+	 * @return	String array with alpha
+	 */
+	public String[] getAlpha() {
+		return this.alpha;
 	}
 	
 }
