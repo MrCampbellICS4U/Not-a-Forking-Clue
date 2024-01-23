@@ -174,6 +174,12 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    		+ "can arrest someone from the suspect list; however, if you’re wrong, you will have failed and "
 	    		+ "another detective will replace you. THERE ARE NO SECOND CHANCES. On the other hand, the sooner you "
 	    		+ "guess correctly, the better; you will be evaluated based on the number of people you let die. \n"
+	    		+ "\n=======================\nSUSPECT LIST:\n"
+	    		+ "\n" + po.getDescription() + "\n"
+	    		+ "\n" + jaq.getDescription() + "\n"
+	    		+ "\n" + pooh.getDescription() + "\n"
+	    		+ "\n" + cheshire.getDescription()
+	    		+ "\n=======================\n"
 	    		+ "\nQuick! The restaurant’s dishboy, Master Oogway, has just been reported dead. Start looking for clues!");
 
 	    context.setLineWrap(true);
