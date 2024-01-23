@@ -233,7 +233,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 		dp = new DrawingPanel();
 		mainPanel.add(dp);
 		
-		playSong(songFilePath);
+		//playSong(songFilePath);
 		
 		// load different backgrounds based on the current round
 	    switch (round) {
@@ -410,13 +410,17 @@ public class MainGameCode extends JFrame implements ActionListener{
                     
                     // Check which radio button is selected and display the label accordingly
                     if (round == 0 && choice1.isSelected()) {
-                        radioPanel.add(right);
+                        endPanel.add(right);
+                        endPanel.add(threeStar);
                     } else if (round == 1 && choice1.isSelected()) {
-                        radioPanel.add(right);
+                        endPanel.add(right);
+                        endPanel.add(twoStar);
                     } else if (round == 2 && choice1.isSelected()) {
-                        radioPanel.add(right);
+                        endPanel.add(right);
+                        endPanel.add(oneStar);
                     } else if (choice2.isSelected() || choice3.isSelected() || choice4.isSelected()) {
-                        radioPanel.add(wrong);
+                        endPanel.add(wrong);
+                        endPanel.add(zeroStar);
                     }
 
                     endPanel.add(quitButton);
@@ -465,9 +469,9 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    riddleMessageShown = false;
 	    
 	    // restart song
-		clip.stop();
+		/*clip.stop();
 		clip.setMicrosecondPosition(0); // rewind to the beginning
-        clip.start();
+        clip.start();*/
 	    
 	    // restart timer
 		timer.start();
@@ -664,7 +668,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		roundTime--; //timer ticks
 		if (roundTime == 0) {
-			clip.stop();
+			//clip.stop();
 			goToEndPanel(); //end game
 			timer.stop();
 		}
