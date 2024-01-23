@@ -6,16 +6,13 @@
  */
 package grade12;
 
-import java.awt.font.TextAttribute;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.Timer;
-
 import java.io.*;
-import java.util.*;
 
 public class MainGameCode extends JFrame implements ActionListener{
 
@@ -24,7 +21,6 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private final static int PANH = 1440 - 700;
 		
 	// player variables
-	private String name = "Judy Hopps";
 	private static int playerX = 210; // initial X coordinate for Judy
 	private static int playerY = PANH - 200; // initial Y coordinate for Judy
 	private Rectangle judyBox = new Rectangle(playerX+28, playerY+40, 24, 35); // updated judyBox
@@ -48,10 +44,6 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private Character cheshire = new Character("Cheshire", 27, "Waiter", "The Cheshire Cat has been a waiter at "
 			+ "Campbell’s Cuisine for many years now. He’s incredibly sly and devious…certainly capable of "
 			+ "organized crime.");
-	
-	// Create Character lists
-	private ArrayList<Character> alive = new ArrayList<Character>();
-	private ArrayList<Character> dead = new ArrayList<Character>();
 
 	// create Hint Rectangles
 	private Hint clue1 = new Hint("The fur found by the crime scene is fairly dark.");
@@ -100,7 +92,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	// timer stuff
 	private Timer timer;
 	private int TIMERSPEED = 1000; // speed in seconds
-	private int roundTime = 90; // time for each round in seconds
+	private int roundTime = 10; // time for each round in seconds
 	JLabel showTime; // shows the time
 	int minutes, seconds;
 	String filled = " "; // String to place on JLabel time
@@ -113,9 +105,6 @@ public class MainGameCode extends JFrame implements ActionListener{
     private JLabel title;
     private JTextArea context;
     private JScrollPane scrollPane;
-
-	// main panel components
-	private JButton arrestButton;
     
     // end panel components
     private JButton quitButton;
@@ -148,8 +137,6 @@ public class MainGameCode extends JFrame implements ActionListener{
 		
 		// set up timer
 		timer = new Timer(TIMERSPEED, this);
-		// add characters
-		alive.add(po);
 	}//end MainGameCode()
 	
 	/**
@@ -276,15 +263,6 @@ public class MainGameCode extends JFrame implements ActionListener{
 		
 		// add player
 		judyPlayer = loadImage("/res/judy.png");
-
-		arrestButton = new JButton("ARREST");
-		arrestButton.addActionListener(new ActionListener(){
-	    	@Override
-            public void actionPerformed(ActionEvent e) {
-	    		goToSuspectList();
-            }
-	    });
-		mainPanel.add(arrestButton);
 		
 		// pack, center, display
 		this.add(mainPanel);
@@ -436,74 +414,6 @@ public class MainGameCode extends JFrame implements ActionListener{
 	}
 	
 	/**
-	 * Display the suspect list visual
-	 */
-	private void goToSuspectList() {
-        // show the suspect list
-        setupSuspectList();
-        validate();
-        //repaint();
-    }// end goToSuspectList()
-	
-	/**
-	 * Set up suspect list visuals & GUI
-	 */
-	private void setupSuspectList() {
-		JFrame susFrame = new JFrame("Suspect List");
-	    JPanel suspectList = new JPanel();
-	    suspectList.setLayout(new BoxLayout(suspectList, BoxLayout.Y_AXIS));
-	    suspectList.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
-
-	    JLabel who = new JLabel("You may only guess ONCE");
-		suspectList.add(who);
-
-		// Strikethrough effect
-		Font font = new Font("helvetica", Font.PLAIN, 12);
-		Map  attributes = font.getAttributes();
-		attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-		Font newFont = new Font(attributes);
-
-		JRadioButton aliveSus;
-		for (Character sus: alive) {
-			aliveSus = new JRadioButton(sus.getName());
-			aliveSus.setActionCommand(sus.getName());
-			aliveSus.addActionListener(new ActionListener(){
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					String name = e.getActionCommand();
-					if (name == "Po") showMessageDialog("You Win!!", "Po was the murderer! You win!");
-					else showMessageDialog("WRONG", "You arrested an innocent animal");
-					System.exit(0);
-				}
-			});
-			suspectList.add(aliveSus);
-		}
-
-		JRadioButton deadSus;
-		ButtonGroup deads = new ButtonGroup();
-		for (Character sus: dead) {
-			deadSus = new JRadioButton(sus.getName());
-			deads.add(deadSus);
-			deadSus.setActionCommand("dead");
-			deadSus.addActionListener(new ActionListener(){
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					String name = e.getActionCommand();
-					if (name == "dead") showMessageDialog("UMMM", "Sorry, you can't arrest a dead animal.");
-					deads.clearSelection();
-				}
-			});
-			deadSus.setFont(newFont);
-			suspectList.add(deadSus);
-		}
-
-		susFrame.add(suspectList);
-	    susFrame.pack();
-	    susFrame.setLocationRelativeTo(null);
-	    susFrame.setVisible(true);
-	}//end setupSuspectList()
-  
-  /**
 	 * Reset the timer and start the next round
 	 */
 	private void resetRound() {
@@ -607,7 +517,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        
 	        // draw timer bar
             g2.setPaint(Color.RED);
-            int barLength = (int) ((double) roundTime / (double) 100 * PANW - 10);
+            int barLength = (int) (((double) roundTime / 100) * PANW);
             g2.fillRect(10, PANH - 10, barLength, 20);
 
 	        // draw Judy
@@ -630,11 +540,9 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        if (round == 0 && judyBox.intersects(clueRect1) && !clueMessageShown) {
 	            showMessageDialog(null, clue1.getMessage());
 	            clueMessageShown = true;
-	            //repaint();
 	        } else if (round == 0 && judyBox.intersects(ghostRect1) && !ghostMessageShown) {
 	            showMessageDialog(null, ghost1.getMessage());
 	            ghostMessageShown = true;
-	            // repaint();
 	        } else if (round == 0 && judyBox.intersects(riddleRect1) && !riddleMessageShown) {
 	        	// make formatted message with answers displayed vertically
 	            String message = riddle1.getPrompt();
@@ -659,11 +567,9 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        if (round == 1 && judyBox.intersects(clueRect2) && !clueMessageShown) {
 	            showMessageDialog(null, clue2.getMessage());
 	            clueMessageShown = true;
-	            //dp.repaint();
 	        } else if (round == 1 && judyBox.intersects(ghostRect2) && !ghostMessageShown) {
 	            showMessageDialog(null, ghost2.getMessage());
 	            ghostMessageShown = true;
-	            //dp.repaint();
 	        } else if (round == 1 && judyBox.intersects(riddleRect2) && !riddleMessageShown) {
 	            // make formatted message with answers displayed vertically
 	            String message = riddle2.getPrompt();
@@ -682,20 +588,15 @@ public class MainGameCode extends JFrame implements ActionListener{
 	            handleRiddleChoice(choice);
 
 	            riddleMessageShown = true;
-	            
-	            // when user interacts with messagedialog, repaint the screen
-	            //SwingUtilities.invokeLater(() -> repaint());
 	        }
 	        
 	        // check for collisions with hints for round 3
 	        if (round == 2 && judyBox.intersects(clueRect3) && !clueMessageShown) {
 	            showMessageDialog(null, clue3.getMessage());
 	            clueMessageShown = true;
-	            //repaint();
 	        } else if (round == 2 && judyBox.intersects(ghostRect3) && !ghostMessageShown) {
 	            showMessageDialog(null, ghost3.getMessage());
 	            ghostMessageShown = true;
-	            //repaint();
 	        } else if (round == 2 && judyBox.intersects(riddleRect3) && !riddleMessageShown) {
 	            // make formatted message with answers displayed vertically
 	            String message = riddle3.getPrompt();
