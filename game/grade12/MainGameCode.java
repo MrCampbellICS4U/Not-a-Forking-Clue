@@ -6,20 +6,27 @@
  */
 package grade12;
 
+import java.awt.font.TextAttribute;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.Timer;
 
 import java.io.*;
+import java.util.*;
 public class MainGameCode extends JFrame implements ActionListener{
 
+	// panel width & height
+	private final static int PANW = 1440 - 700;
+	private final static int PANH = 1440 - 700;
+		
 	// player variables
 	private String name = "Judy Hopps";
-	private int playerX = 210; // initial X coordinate for Judy
-	private int playerY = PANH - 200; // initial Y coordinate for Judy
-	private Rectangle judyBox = new Rectangle(playerX, playerY, 80, 80); // updated judyBox
+	private static int playerX = 210; // initial X coordinate for Judy
+	private static int playerY = PANH - 200; // initial Y coordinate for Judy
+	private Rectangle judyBox = new Rectangle(playerX+28, playerY+40, 24, 35); // updated judyBox
 	private int jsx1=0, jsy1 = 0, jsx2=2000, jsy2=2000; //source coordinates for Judy (to flip when turn)
 	
 	// variables to track whether messages are shown
@@ -28,6 +35,7 @@ public class MainGameCode extends JFrame implements ActionListener{
     private boolean riddleMessageShown = false;
 	
 	// create Character objects
+
 	private Character po = new Character("Master Ping Xiao Po", 21, "Chef", "Master Ping Xiao Po has been the head "
 			+ "chef at Campbell’s Cuisine for a few months now. He certainly has access to an arsenal of weapons…");
 	private Character pooh = new Character("Winnie the Pooh", 24, "Host", "Winnie the Pooh is a very new addition to the "
@@ -40,6 +48,10 @@ public class MainGameCode extends JFrame implements ActionListener{
 			+ "Campbell’s Cuisine for many years now. He’s incredibly sly and devious…certainly capable of "
 			+ "organized crime.");
 	
+	// Create Character lists
+	private ArrayList<Character> alive = new ArrayList<Character>();
+	private ArrayList<Character> dead = new ArrayList<Character>();
+
 	// create Hint Rectangles
 	private Hint clue1 = new Hint("The fur found by the crime scene is fairly dark.");
 	private Hint ghost1 = new Hint("Today is not a murder mystery. It’s a gift. That’s why it’s called the present.");
@@ -96,6 +108,9 @@ public class MainGameCode extends JFrame implements ActionListener{
     private JLabel title;
     private JTextArea context;
     private JScrollPane scrollPane;
+
+	// main panel components
+	private JButton arrestButton;
     
     // end panel components
     private JButton quitButton;
@@ -105,20 +120,16 @@ public class MainGameCode extends JFrame implements ActionListener{
     private JLabel right, wrong;
     private JButton nextButton2;
 	
-	// panel width & height
-	private final static int PANW = 1440 - 700;
-	private final static int PANH = 1440 - 700;
-	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				new MainGameCode();
 			}
 		});
-	}
+	}//end main()
 	
 	/**
-	 * constructor
+	 * Constructor
 	 */
 	public MainGameCode() {
 		this.setTitle("Campbell's Cuisine");
@@ -129,8 +140,15 @@ public class MainGameCode extends JFrame implements ActionListener{
 		
 		// set up timer
 		timer = new Timer(TIMERSPEED, this);
-	}
+		// add characters
+		alive.add(po);
+		alive.add(tramp);
+		dead.add(deadPerson);
+	}//end MainGameCode()
 	
+	/**
+	 * Set up context panel (explains background information before game)
+	 */
 	private void setupContextPanel() {
 	    JPanel contextPanel = new JPanel();
 	    contextPanel.setLayout(new BoxLayout(contextPanel, BoxLayout.Y_AXIS));
@@ -162,8 +180,8 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    scrollPane.setPreferredSize(new Dimension(500,200));
 	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-	    nextButton = new JButton("NEXT");
-	    nextButton.addActionListener(new ActionListener(){
+	    nextButton = new JButton("NEXT"); //start game
+	    nextButton.addActionListener(new ActionListener(){ //anonymous actionListener to start game
 	    	@Override
             public void actionPerformed(ActionEvent e) {
                 goToMainPanel();
@@ -176,13 +194,16 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    contextPanel.add(Box.createVerticalStrut(10));
 	    contextPanel.add(nextButton);
 
+	 // pack, center, display
 	    this.add(contextPanel);
 	    this.pack();
 	    this.setLocationRelativeTo(null);
 	    this.setVisible(true);
-	}
+	}//end setupContextPanel()
 
-
+	/**
+	 * Start the game (display main game visuals)
+	 */
     private void goToMainPanel() {
         // remove context panel and show the main panel
         getContentPane().removeAll();
@@ -190,8 +211,11 @@ public class MainGameCode extends JFrame implements ActionListener{
         validate();
         repaint();
         timer.start();
-    }
+    }//end goToMainPanel()
 	
+    /**
+     * Set up main game visuals
+     */
 	private void setupMainPanel() {
 		// set up main panel (on top of background)
 		mainPanel = new JPanel();
@@ -213,7 +237,10 @@ public class MainGameCode extends JFrame implements ActionListener{
 	            break;
 	    }
 	    
-	    // add clue Rectangles
+	    /*
+	     * Add Hint rectangles (for user to interact with)
+	     * Coordinates and sizes saved in arrays in the Round class
+	     */
 	    switch (round) {
 	    	case 0: 
 	    		clueRect1 = new Rectangle(round1.getClueX(round), round1.getClueY(round), round1.getClueW(round), round1.getClueH(round));
@@ -234,28 +261,43 @@ public class MainGameCode extends JFrame implements ActionListener{
 		
 		// add player
 		judyPlayer = loadImage("/res/judy.png");
+
+		arrestButton = new JButton("ARREST");
+		arrestButton.addActionListener(new ActionListener(){
+	    	@Override
+            public void actionPerformed(ActionEvent e) {
+	    		goToSuspectList();
+            }
+	    });
+		mainPanel.add(arrestButton);
 		
-		// pack, centre, display
+		// pack, center, display
 		this.add(mainPanel);
 		this.pack();
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
-	}
+	} //end setupMainPanel()
 	
+	/**
+	 * End the game (display game-end visuals)
+	 */
 	private void goToEndPanel() {
         // remove main panel and show the end panel
         getContentPane().removeAll();
         setupEndPanel();
         validate();
         repaint();
-    }
+    }//end goToEndPanel()
 	
+	/**
+	 * Set up game-end visuals
+	 */
 	private void setupEndPanel() {
 	    JPanel endPanel = new JPanel();
 	    endPanel.setLayout(new BoxLayout(endPanel, BoxLayout.Y_AXIS));
 	    endPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
 	    
-	    title = new JLabel("Who was the murderer?");
+	    title = new JLabel("Who was the murderer?"); //prompt player to guess
 	    
 	    // set ImageIcons to use as radio buttons
 	    po.setImagePath("/res/po.png");
@@ -347,23 +389,92 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    endPanel.add(Box.createVerticalStrut(10));
 	    endPanel.add(quitButton);
 
+	    // pack, center, display
 	    this.add(endPanel);
 	    this.pack();
 	    this.setLocationRelativeTo(null);
 	    this.setVisible(true);
-	}
+	} //end setupEndPanel()
 	
+	private void goToSuspectList() {
+        // show the suspect list
+        setupSuspectList();
+        validate();
+        //repaint();
+    }
+	
+	private void setupSuspectList() {
+		JFrame susFrame = new JFrame("Suspect List");
+	    JPanel suspectList = new JPanel();
+	    suspectList.setLayout(new BoxLayout(suspectList, BoxLayout.Y_AXIS));
+	    suspectList.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+
+	    JLabel who = new JLabel("You may only guess ONCE");
+		suspectList.add(who);
+
+		// Strikethrough effect
+		Font font = new Font("helvetica", Font.PLAIN, 12);
+		Map  attributes = font.getAttributes();
+		attributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+		Font newFont = new Font(attributes);
+
+		JRadioButton aliveSus;
+		for (Character sus: alive) {
+			aliveSus = new JRadioButton(sus.getName());
+			aliveSus.setActionCommand(sus.getName());
+			aliveSus.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String name = e.getActionCommand();
+					if (name == "Po") showMessageDialog("You Win!!", "Po was the murderer! You win!");
+					else showMessageDialog("WRONG", "You arrested an innocent animal");
+					System.exit(0);
+				}
+			});
+			suspectList.add(aliveSus);
+		}
+
+		JRadioButton deadSus;
+		ButtonGroup deads = new ButtonGroup();
+		for (Character sus: dead) {
+			deadSus = new JRadioButton(sus.getName());
+			deads.add(deadSus);
+			deadSus.setActionCommand("dead");
+			deadSus.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String name = e.getActionCommand();
+					if (name == "dead") showMessageDialog("UMMM", "Sorry, you can't arrest a dead animal.");
+					deads.clearSelection();
+				}
+			});
+			deadSus.setFont(newFont);
+			suspectList.add(deadSus);
+		}
+
+		susFrame.add(suspectList);
+	    susFrame.pack();
+	    susFrame.setLocationRelativeTo(null);
+	    susFrame.setVisible(true);
+	}
+  
+  /**
+	 * Reset the timer and start the next round
+	 */
 	private void resetRound() {
 	    // reset timer and start the next round
-	    roundTime = 20;
+	    roundTime = 90;
 	    round++;
 	    clueMessageShown = false;
 	    ghostMessageShown = false;
 	    riddleMessageShown = false;
 	    timer.restart();
-	}
+	} //end resetRound()
 	
 	private class DrawingPanel extends JPanel {
+		/**
+		 * Constructor
+		 */
 	    DrawingPanel() {
 	        // set preferred size + focus component
 	        this.setPreferredSize(new Dimension(PANW, PANH));
@@ -385,20 +496,21 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0), "up");
 	        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0), "down");
 
+	        //move judy according to player input
 	        actionMap.put("left", new AbstractAction() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
 	                movePlayer(-10, 0);
-	                jsx1=0; //flip judy's view
-	                jsx2=2000;
+	                jsx1=0; //flip judy's view (turn left)
+	                jsx2=2000; //"
 	            }
 	        });
 	        actionMap.put("right", new AbstractAction() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
-	            	jsx1=2000; //flip judy's view
-	            	jsx2=0;
 	                movePlayer(10, 0);
+	                jsx1=2000; //flip judy's view (turn right)
+	            	jsx2=0; //"
 	            }
 	        });
 	        actionMap.put("up", new AbstractAction() {
@@ -413,21 +525,24 @@ public class MainGameCode extends JFrame implements ActionListener{
 	                movePlayer(0, 10);
 	            }
 	        });
-	    }
+	    } //end DrawingPanel()
 
+	    /**
+	     * Move player according to given delta variables & checking for collisions
+	     * @param deltaX	int number of x coordinates to move
+	     * @param deltaY	int number of y coordinates to move
+	     */
 	    private void movePlayer(int deltaX, int deltaY) {
 	        int newPlayerX = playerX + deltaX;
 	        int newPlayerY = playerY + deltaY;
 
 	        // check if the new position is within the boundaries
-	        if (newPlayerX >= 0 && newPlayerX + judyBox.width <= PANW && newPlayerY >= 0 && newPlayerY + judyBox.height <= PANH) {
-	            // Update player position only if within boundaries
-	            playerX = newPlayerX;
-	            playerY = newPlayerY;
-	            judyBox.setLocation(playerX, playerY);
-	            repaint();
-	        }
-	    }
+	        playerX += deltaX;
+	        playerY += deltaY;
+	        Barrier.checkWalls(playerX, playerY); //ensure within boundaries
+	        judyBox.setLocation(playerX+28, playerY+40);
+	        repaint();
+	    }//end movePlayer(int, int)
 
 	    @Override
 	    protected void paintComponent(Graphics g) {
@@ -526,21 +641,23 @@ public class MainGameCode extends JFrame implements ActionListener{
 
 	            riddleMessageShown = true;
 	        }
-
-
-	    }
+        
+	    } //end paintComponent(Graphics)
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		roundTime--;
+		roundTime--; //timer ticks
 		if (roundTime == 0) {
-			goToEndPanel();
+			goToEndPanel(); //end game
 			timer.stop();
 		}
-	}
+	}//end actionPerformed(ActionEvent)
 	
-	// add this method to handle the user's choice for the riddle
+	/**
+	 * Handle the user's choice for the riddle
+	 * @param choice	int choice for whichever answer the player picked
+	 */
 	private void handleRiddleChoice(int choice) {
 		// Round 1
 	    if (round == 0) {
@@ -568,15 +685,21 @@ public class MainGameCode extends JFrame implements ActionListener{
 	                    + "You have no recollection of what he said.\n");
 	        }
 	    }
-	}
-	
-	private void showMessageDialog(String title, String message) {
-        JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
-    }
+	}//end handleRiddleChoice(int)
 	
 	/**
-	 * loads an image from a file in the resource folder
-	 * @param filename	name of the file
+	 * Display pop-up message
+	 * @param title		String title for pop-up
+	 * @param message	String message for pop-up to display
+	 */
+	private void showMessageDialog(String title, String message) {
+        JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
+        this.repaint();
+  }//end showMessageDialog(String, String)
+	
+	/**
+	 * Loads an image from a file in the resource folder
+	 * @param 	String filename	name of the file
 	 * @return	returns a BufferedImage connected to filename
 	 */
 	BufferedImage loadImage(String filename) {
@@ -594,6 +717,22 @@ public class MainGameCode extends JFrame implements ActionListener{
 			JOptionPane.showMessageDialog(null, "An image failed to load: " + filename , "ERROR", JOptionPane.ERROR_MESSAGE);
 		}
 		return image;
-	}
+	}//end loadImage(String)
+	
+	/**
+	 * Updates playerX (when accounting for collisions in Barrier class)
+	 * @param x		int coordinate to set 'x' at
+	 */
+	public static void setPlayerX(int x) {
+		playerX=x;
+	}//end setPlayerX(int)
+	
+	/**
+	 * Updates playerY (when accounting for collisions in Barrier class)
+	 * @param y		int coordinate to set 'y' at
+	 */
+	public static void setPlayerY(int y) {
+		playerY=y;
+	}//end setPlayerY(int)
 
 }
