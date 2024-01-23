@@ -100,7 +100,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	// timer stuff
 	private Timer timer;
 	private int TIMERSPEED = 1000; // speed in seconds
-	private int roundTime = 10; // time for each round in seconds
+	private int roundTime = 90; // time for each round in seconds
 	JLabel showTime; // shows the time
 	int minutes, seconds;
 	String filled = " "; // String to place on JLabel time
