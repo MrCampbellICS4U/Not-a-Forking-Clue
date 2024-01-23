@@ -31,8 +31,8 @@ public class Barrier {
 			smallChunk4, smallChunk5, largeChunk2, chair, tableChunk1, tableChunk2, smallChunk6, smallChunk7, kitchenTable};
 	
 	//create Rectangle doors/covers (Judy is hidden)
-	private static Rectangle bush = new Rectangle(316,310,13,29); //bush between largeChunk2 and smallChunk3
-	private static Rectangle door1 = new Rectangle(370,310,13,29); //small door next to the bush
+	private static Rectangle bush = new Rectangle(316,310,13,34); //bush between largeChunk2 and smallChunk3
+	private static Rectangle door1 = new Rectangle(370,310,13,34); //small door next to the bush
 	private static Rectangle betweenTables = new Rectangle(486, 201, 102, 119); //behind the chairs
 	private static Rectangle door2 = new Rectangle(199, 379, 61, 69); //biggest door
 	private static Rectangle door3 = new Rectangle(355, 616, 45, 33); //kitchen door
