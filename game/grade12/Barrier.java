@@ -9,8 +9,16 @@ package grade12;
 import java.awt.*;
 
 public class Barrier {
-	public static void checkWalls(Rectangle player){
-		if (player.x+28<95) MainGameCode.setJudyBoxX(90);
-	}
+	/**
+	 * COMMENT LATER
+	 * @param playerX
+	 * @param playerY
+	 */
+	public static void checkWalls(int playerX, int playerY){
+		if (playerX<67) MainGameCode.setPlayerX(67); //check against barrier, farthest left
+		if (playerY<110) MainGameCode.setPlayerY(110); //farthest up
+		if (playerX+52>640) MainGameCode.setPlayerX(640-52); //farthest right
+		if (playerY+75>700) MainGameCode.setPlayerY(700-75); //farthest down
+	}//end checkWalls(int, int)
 
 }
