@@ -611,6 +611,10 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        //g2.setColor(Color.WHITE);
 	        //g2.drawRect(311,310,28,29);
 	        //g2.drawRect(357,310,20,29);
+	        //g2.drawRect(134,127,22,27);
+	        //g2.drawRect(413, 134, 10, 5);
+	        //g2.drawRect(460, 259, 26, 26);
+	        //g2.drawRect(253, 237, 27, 53);
 
 	        // check for collisions with hints for round1
 	        if (round == 0 && judyBox.intersects(clueRect1) && !clueMessageShown) {
