@@ -124,6 +124,9 @@ public class MainGameCode extends JFrame implements ActionListener{
     private JButton guessButton;
     private JLabel right, wrong;
     private JButton nextButton2;
+    private JPanel endPanel, radioPanel, buttonPanel;
+    private int endPANW = 800;
+    private int endPANH = 400;
 	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -308,11 +311,12 @@ public class MainGameCode extends JFrame implements ActionListener{
 	 * Set up game-end visuals
 	 */
 	private void setupEndPanel() {
-	    JPanel endPanel = new JPanel();
+	    endPanel = new JPanel();
 	    endPanel.setLayout(new BoxLayout(endPanel, BoxLayout.Y_AXIS));
 	    endPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+	    endPanel.setPreferredSize(new Dimension(endPANW, endPANH));
 	    
-	    title = new JLabel("Do you know who the murderer is?"); //prompt player to guess
+	    title = new JLabel("Who is the Kitchen Killer?"); //prompt player to guess
 	    
 	    // set ImageIcons to use as radio buttons
 	    po.setImagePath("/res/po.png");
@@ -329,14 +333,14 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    cheshireIcon = cheshire.getImageIcon();
 	    
 	    // create radio buttons
-	    choice1 = new JRadioButton("Po", poIcon);
-        choice2 = new JRadioButton("Winnie the Pooh", poohIcon);
-        choice3 = new JRadioButton("Jaq", jaqIcon);
-        choice4 = new JRadioButton("Cheshire", cheshireIcon);
+	    choice1 = new JRadioButton("", poIcon);
+        choice2 = new JRadioButton("", poohIcon);
+        choice3 = new JRadioButton("", jaqIcon);
+        choice4 = new JRadioButton("", cheshireIcon);
         
         // labels to indicate whether user guess was correct
-        right = new JLabel("You guessed right!");
-        wrong = new JLabel("You guessed wrong!");
+        right = new JLabel("Good job! You have successfully found the murderer.");
+        wrong = new JLabel("You failed to find the murderer.");
 
         ButtonGroup group = new ButtonGroup();
         group.add(choice1);
@@ -350,41 +354,7 @@ public class MainGameCode extends JFrame implements ActionListener{
         // add next button
         nextButton2 = new JButton("NEXT ROUND");
         
-        // add Action Listener so that user can guess who is murderer
-        guessButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	// check if a radio button is selected
-            	if (choice1.isSelected() || choice2.isSelected() || choice3.isSelected() || choice4.isSelected()) {
-                    // if selected, remove from view
-                    endPanel.remove(choice1);
-                    endPanel.remove(choice2);
-                    endPanel.remove(choice3);
-                    endPanel.remove(choice4);
-                    endPanel.remove(guessButton);
-                    endPanel.remove(nextButton2);
-                    endPanel.remove(quitButton);
-
-                    // repaint the container to reflect above changes
-                    endPanel.revalidate();
-                    endPanel.repaint();
-
-                    // check which radio button is selected and display label accordingly
-                    if (choice1.isSelected()) {
-                        endPanel.add(right);
-                        endPanel.add(quitButton);
-                    } else if (choice2.isSelected() || choice3.isSelected() || choice4.isSelected()) {
-                        endPanel.add(wrong);
-                        endPanel.add(quitButton);
-                    } 
-                } else {
-                    // if neither radio button is selected, display a mildly threatening message
-                    JOptionPane.showMessageDialog(endPanel, "Please select a suspect before proceeding.", "Warning", JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        });
-
-	    // add quit button so user can exit game completely
+        // add quit button so user can exit game completely
         quitButton = new JButton("QUIT");
 	    quitButton.addActionListener(new ActionListener(){
 	    	@Override
@@ -393,37 +363,77 @@ public class MainGameCode extends JFrame implements ActionListener{
             }
 	    });
 	    
-	    // next button moves on to next round
+	    // xext button moves on to the next round
 	    nextButton2.addActionListener(new ActionListener() {
-    		@Override
-    		public void actionPerformed(ActionEvent e) {
-                resetRound();
-                goToMainPanel();
-    		}
-    	});
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            resetRound();
+	            goToMainPanel();
+	        }
+	    });
 
+	    // create a panel for the radio buttons using GridLayout
+	    radioPanel = new JPanel(new GridLayout(1, 4));
+	    radioPanel.add(choice1);
+	    radioPanel.add(choice2);
+	    radioPanel.add(choice3);
+	    radioPanel.add(choice4);
+
+	    // create a panel for the buttons using FlowLayout
+	    buttonPanel = new JPanel(new FlowLayout());
+	    buttonPanel.add(guessButton);
+	    if (round < 2) {
+	        buttonPanel.add(nextButton2);
+	    }
+	    buttonPanel.add(quitButton);
+        
+        // add Action Listener so that user can guess who is murderer
+        guessButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	// Check if a radio button is selected
+                if (choice1.isSelected() || choice2.isSelected() || choice3.isSelected() || choice4.isSelected()) {
+                    // If selected, hide other components
+                	radioPanel.remove(choice1);
+                    radioPanel.remove(choice2);
+                    radioPanel.remove(choice3);
+                    radioPanel.remove(choice4);
+                    buttonPanel.remove(guessButton);
+                    buttonPanel.remove(nextButton2);
+                    buttonPanel.remove(quitButton);
+                    
+                    // Check which radio button is selected and display the label accordingly
+                    if (choice1.isSelected()) {
+                        radioPanel.add(right);
+                    } else if (choice2.isSelected() || choice3.isSelected() || choice4.isSelected()) {
+                        radioPanel.add(wrong);
+                    }
+
+                    endPanel.add(quitButton);
+
+                    // Repaint the container to reflect the changes
+                    endPanel.revalidate();
+                    endPanel.repaint();
+                } else {
+                    // If neither radio button is selected, display a warning message
+                    JOptionPane.showMessageDialog(endPanel, "Please select a suspect before proceeding.", "Warning", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+
+	    // add components to the endPanel
 	    endPanel.add(title);
 	    endPanel.add(Box.createVerticalStrut(10));
-	    endPanel.add(choice1);
-        endPanel.add(choice2);
-        endPanel.add(choice3);
-        endPanel.add(choice4);
-        endPanel.add(Box.createVerticalStrut(10));
-        endPanel.add(guessButton);
-        // only allow user to click next button if there's still another round; they must guess on round 3
-        if (round < 2) {
-        	endPanel.add(Box.createVerticalStrut(10));
-        	endPanel.add(nextButton2);
-        }
+	    endPanel.add(radioPanel);
 	    endPanel.add(Box.createVerticalStrut(10));
-	    endPanel.add(quitButton);
+	    endPanel.add(buttonPanel);
 
 	    // pack, center, display
 	    this.add(endPanel);
 	    this.pack();
 	    this.setLocationRelativeTo(null);
 	    this.setVisible(true);
-	} //end setupEndPanel()
+	}
 	
 	/**
 	 * Display the suspect list visual
