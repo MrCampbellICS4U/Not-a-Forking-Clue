@@ -99,7 +99,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	// timer stuff
 	private Timer timer;
 	private int TIMERSPEED = 1000; // speed in seconds
-	private int roundTime = 10; // time for each round
+	private int roundTime = 90; // time for each round
 	
 	// image declaration
 	private BufferedImage restaurantbg, judyPlayer;
@@ -556,7 +556,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        g2.drawImage(restaurantbg, 0, 0, PANW, PANH, null);
 
 	        // draw Judy
-	        if (Barrier.judyIsVisible(playerX+28,playerY+40)==true) {
+	        if (Barrier.judyIsVisible(playerX,playerY)==true) {
 	        	g2.drawImage(judyPlayer, playerX, playerY, playerX+80, playerY+80, jsx1, jsy1, jsx2, jsy2, null);
 	        }
 	      
@@ -564,8 +564,9 @@ public class MainGameCode extends JFrame implements ActionListener{
 	         * TEST BARRIER COORDINATES
 	         */
 	        //g2.setColor(Color.WHITE);
-	        //g2.drawRect(355, 616, 45, 33);
-	        
+	        //g2.drawRect(311,310,28,29);
+	        //g2.drawRect(357,310,20,29);
+
 	        // check for collisions with hints for round1
 	        if (round == 0 && judyBox.intersects(clueRect1) && !clueMessageShown) {
 	            showMessageDialog(null, clue1.getMessage());
