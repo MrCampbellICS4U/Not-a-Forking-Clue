@@ -100,7 +100,10 @@ public class MainGameCode extends JFrame implements ActionListener{
 	// timer stuff
 	private Timer timer;
 	private int TIMERSPEED = 1000; // speed in seconds
-	private int roundTime = 90; // time for each round
+	private int roundTime = 90; // time for each round in seconds
+	JLabel showTime; // shows the time
+	int minutes, seconds;
+	String filled = " "; // String to place on JLabel time
 	
 	// image declaration
 	private BufferedImage restaurantbg, judyPlayer;
@@ -238,6 +241,15 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    }
 	    
 	    /*
+	    // JLabel to show the amount filled
+ 		minutes = roundTime / 60;
+        seconds = roundTime % 60;
+        filled = String.format("%01d:%02d", minutes, seconds);
+ 		showTime = new JLabel(filled, SwingConstants.CENTER);
+ 		showTime.setAlignmentX(CENTER_ALIGNMENT);
+ 		mainPanel.add(showTime);*/
+	    
+	    /*
 	     * Add Hint rectangles (for user to interact with)
 	     * Coordinates and sizes saved in arrays in the Round class
 	     */
@@ -282,7 +294,10 @@ public class MainGameCode extends JFrame implements ActionListener{
 	 * End the game (display game-end visuals)
 	 */
 	private void goToEndPanel() {
-        // remove main panel and show the end panel
+        // stop timer
+		timer.stop();
+		
+		// remove main panel and show the end panel
         getContentPane().removeAll();
         setupEndPanel();
         validate();
@@ -294,7 +309,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	 */
 	private void setupEndPanel() {
 	    JPanel endPanel = new JPanel();
-	    endPanel.setLayout(new BoxLayout(endPanel, BoxLayout.X_AXIS));
+	    endPanel.setLayout(new BoxLayout(endPanel, BoxLayout.Y_AXIS));
 	    endPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
 	    
 	    title = new JLabel("Who was the murderer?"); //prompt player to guess
@@ -344,6 +359,8 @@ public class MainGameCode extends JFrame implements ActionListener{
                     // if selected, remove from view
                     endPanel.remove(choice1);
                     endPanel.remove(choice2);
+                    endPanel.remove(choice3);
+                    endPanel.remove(choice4);
                     endPanel.remove(guessButton);
                     endPanel.remove(nextButton2);
                     endPanel.remove(quitButton);
@@ -480,13 +497,23 @@ public class MainGameCode extends JFrame implements ActionListener{
 	 * Reset the timer and start the next round
 	 */
 	private void resetRound() {
-	    // reset timer and start the next round
+		// reset timer and start the next round
 	    roundTime = 90;
 	    round++;
+	    /*minutes = roundTime / 60;
+        seconds = roundTime % 60;
+        filled = String.format("%01d:%02d", minutes, seconds);
+		showTime.setOpaque(true);
+		showTime.setText(filled);*/
+		dp.repaint();
+		
+		// set variables to be false again so that hints will appear
 	    clueMessageShown = false;
 	    ghostMessageShown = false;
 	    riddleMessageShown = false;
-	    timer.restart();
+	    
+	    // restart timer
+		timer.start();
 	} //end resetRound()
 	
 	private class DrawingPanel extends JPanel {
@@ -567,6 +594,11 @@ public class MainGameCode extends JFrame implements ActionListener{
 
 	        // draw background
 	        g2.drawImage(restaurantbg, 0, 0, PANW, PANH, null);
+	        
+	        // draw timer bar
+            g2.setPaint(Color.RED);
+            int barLength = (int) ((double) roundTime / (double) 100 * PANW - 10);
+            g2.fillRect(10, PANH - 10, barLength, 20);
 
 	        // draw Judy
 	        g2.drawImage(judyPlayer, playerX, playerY, playerX+80, playerY+80, jsx1, jsy1, jsx2, jsy2, null);
@@ -580,7 +612,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        if (round == 0 && judyBox.intersects(clueRect1) && !clueMessageShown) {
 	            showMessageDialog(null, clue1.getMessage());
 	            clueMessageShown = true;
-	            repaint();
+	            //repaint();
 	        } else if (round == 0 && judyBox.intersects(ghostRect1) && !ghostMessageShown) {
 	            showMessageDialog(null, ghost1.getMessage());
 	            ghostMessageShown = true;
@@ -634,18 +666,18 @@ public class MainGameCode extends JFrame implements ActionListener{
 	            riddleMessageShown = true;
 	            
 	            // when user interacts with messagedialog, repaint the screen
-	            SwingUtilities.invokeLater(() -> repaint());
+	            //SwingUtilities.invokeLater(() -> repaint());
 	        }
 	        
 	        // check for collisions with hints for round 3
 	        if (round == 2 && judyBox.intersects(clueRect3) && !clueMessageShown) {
 	            showMessageDialog(null, clue3.getMessage());
 	            clueMessageShown = true;
-	            repaint();
+	            //repaint();
 	        } else if (round == 2 && judyBox.intersects(ghostRect3) && !ghostMessageShown) {
 	            showMessageDialog(null, ghost3.getMessage());
 	            ghostMessageShown = true;
-	            repaint();
+	            //repaint();
 	        } else if (round == 2 && judyBox.intersects(riddleRect3) && !riddleMessageShown) {
 	            // make formatted message with answers displayed vertically
 	            String message = riddle3.getPrompt();
@@ -665,6 +697,9 @@ public class MainGameCode extends JFrame implements ActionListener{
 
 	            riddleMessageShown = true;
 	        }
+	        
+	        // when user interacts with messagedialog, repaint the screen
+            SwingUtilities.invokeLater(() -> repaint());
         
 	    } //end paintComponent(Graphics)
 	}
