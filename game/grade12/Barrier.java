@@ -30,6 +30,16 @@ public class Barrier {
 	private static Rectangle[] barriers = {bar, leftWall, smallChunk1, smallChunk2, smallChunk3, largeChunk1,
 			smallChunk4, smallChunk5, largeChunk2, chair, tableChunk1, tableChunk2, smallChunk6, smallChunk7, kitchenTable};
 	
+	//create Rectangle doors/covers (Judy is hidden)
+	private static Rectangle bush = new Rectangle(311,310,28,29); //bush between largeChunk2 and smallChunk3
+	private static Rectangle door1 = new Rectangle(357,310,30,29); //small door next to the bush
+	private static Rectangle betweenTables = new Rectangle(486, 201, 102, 139); //behind the chairs
+	private static Rectangle door2 = new Rectangle(199, 379, 61, 69); //biggest door
+	private static Rectangle door3 = new Rectangle(355, 616, 45, 33); //kitchen door
+	
+	//array to check covers
+	private static Rectangle[] covers = {bush, door1, betweenTables, door2, door3};
+	
 	/**
 	 * Prevents Judy from entering certain chunks on the map
 	 * @param playerX	int updated x coordinate of Judy
@@ -55,7 +65,22 @@ public class Barrier {
 				MainGameCode.setPlayerY(ogY);
 			}
 		}
-		
 	}//end checkWalls(int, int)
+	
+	/**
+	 * Hides Judy when she is in certain areas of the map
+	 * @param playerX	int updated x coordinate of Judy
+	 * @param playerY	int updated y coordinate of Judy
+	 * @return			returns a boolean for if Judy should be drawn
+	 */
+	public static boolean judyIsVisible(int playerX, int playerY ) {
+		boolean isVisible = true;
+		for (int i=0; i<covers.length; i++) {
+			if (covers[i].contains(playerX+28, playerY+75) || covers[i].contains(playerX+52,playerY+75) || covers[i].contains(playerX+28, playerY+40) || covers[i].contains(playerX+52, playerY+75)) {
+				isVisible=false;
+			}
+		}
+		return isVisible;
+	}
 
 }
