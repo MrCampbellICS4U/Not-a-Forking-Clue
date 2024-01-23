@@ -74,7 +74,8 @@ public class MainGameCode extends JFrame implements ActionListener{
 			"Cinderella");
 	private Hint clue3 = new Hint("The Cheshire Cat seems to be conspiring with Melman about something very important.");
 	private Hint ghost3 = new Hint("Right before I died, someone pulled my beanie over my head! I could hear heavy footsteps…");
-	private Riddle riddle3 = new Riddle("You seem to recall the Cheshire Cat mentioning something special about this beanie. Hmm… you might remember better if you can recall something else he said:\n"
+	private Riddle riddle3 = new Riddle("You seem to recall the Cheshire Cat mentioning something special about this beanie. \n"
+			+ "Hmm… you might remember better if you can recall something else he said:\n"
 			+ "\n"
 			+ "Which of the following French words did the Cheshire Cat mention?\n",
 			"CORRECT! Right after he asked you that silly riddle, the Cheshire Cat mentioned how badly he wanted that beanie for himself.",
@@ -99,7 +100,10 @@ public class MainGameCode extends JFrame implements ActionListener{
 	// timer stuff
 	private Timer timer;
 	private int TIMERSPEED = 1000; // speed in seconds
-	private int roundTime = 90; // time for each round
+	private int roundTime = 90; // time for each round in seconds
+	JLabel showTime; // shows the time
+	int minutes, seconds;
+	String filled = " "; // String to place on JLabel time
 	
 	// image declaration
 	private BufferedImage restaurantbg, judyPlayer;
@@ -115,7 +119,7 @@ public class MainGameCode extends JFrame implements ActionListener{
     
     // end panel components
     private JButton quitButton;
-    private JRadioButton choice1, choice2;
+    private JRadioButton choice1, choice2, choice3, choice4;
     private ImageIcon poIcon, poohIcon, jaqIcon, cheshireIcon;
     private JButton guessButton;
     private JLabel right, wrong;
@@ -237,6 +241,15 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    }
 	    
 	    /*
+	    // JLabel to show the amount filled
+ 		minutes = roundTime / 60;
+        seconds = roundTime % 60;
+        filled = String.format("%01d:%02d", minutes, seconds);
+ 		showTime = new JLabel(filled, SwingConstants.CENTER);
+ 		showTime.setAlignmentX(CENTER_ALIGNMENT);
+ 		mainPanel.add(showTime);*/
+	    
+	    /*
 	     * Add Hint rectangles (for user to interact with)
 	     * Coordinates and sizes saved in arrays in the Round class
 	     */
@@ -281,7 +294,10 @@ public class MainGameCode extends JFrame implements ActionListener{
 	 * End the game (display game-end visuals)
 	 */
 	private void goToEndPanel() {
-        // remove main panel and show the end panel
+        // stop timer
+		timer.stop();
+		
+		// remove main panel and show the end panel
         getContentPane().removeAll();
         setupEndPanel();
         validate();
@@ -302,13 +318,21 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    po.setImagePath("/res/po.png");
 	    poIcon = new ImageIcon();
 	    poIcon = po.getImageIcon();
-		pooh.setImagePath("/res/tramp.png");
+		pooh.setImagePath("/res/pooh.png");
 	    poohIcon = new ImageIcon();
 	    poohIcon = pooh.getImageIcon();
+	    jaq.setImagePath("/res/jaq.png");
+	    jaqIcon = new ImageIcon();
+	    jaqIcon = jaq.getImageIcon();
+	    cheshire.setImagePath("/res/cheshirecat.png");
+	    cheshireIcon = new ImageIcon();
+	    cheshireIcon = cheshire.getImageIcon();
 	    
 	    // create radio buttons
 	    choice1 = new JRadioButton("Po", poIcon);
         choice2 = new JRadioButton("Winnie the Pooh", poohIcon);
+        choice3 = new JRadioButton("Jaq", jaqIcon);
+        choice4 = new JRadioButton("Cheshire", cheshireIcon);
         
         // labels to indicate whether user guess was correct
         right = new JLabel("You guessed right!");
@@ -317,6 +341,8 @@ public class MainGameCode extends JFrame implements ActionListener{
         ButtonGroup group = new ButtonGroup();
         group.add(choice1);
         group.add(choice2);
+        group.add(choice3);
+        group.add(choice4);
         
         // add guess button
         guessButton = new JButton("GUESS NOW");
@@ -329,10 +355,12 @@ public class MainGameCode extends JFrame implements ActionListener{
             @Override
             public void actionPerformed(ActionEvent e) {
             	// check if a radio button is selected
-            	if (choice1.isSelected() || choice2.isSelected()) {
+            	if (choice1.isSelected() || choice2.isSelected() || choice3.isSelected() || choice4.isSelected()) {
                     // if selected, remove from view
                     endPanel.remove(choice1);
                     endPanel.remove(choice2);
+                    endPanel.remove(choice3);
+                    endPanel.remove(choice4);
                     endPanel.remove(guessButton);
                     endPanel.remove(nextButton2);
                     endPanel.remove(quitButton);
@@ -345,7 +373,7 @@ public class MainGameCode extends JFrame implements ActionListener{
                     if (choice1.isSelected()) {
                         endPanel.add(right);
                         endPanel.add(quitButton);
-                    } else if (choice2.isSelected()) {
+                    } else if (choice2.isSelected() || choice3.isSelected() || choice4.isSelected()) {
                         endPanel.add(wrong);
                         endPanel.add(quitButton);
                     } 
@@ -377,7 +405,9 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    endPanel.add(title);
 	    endPanel.add(Box.createVerticalStrut(10));
 	    endPanel.add(choice1);
-        //endPanel.add(choice2);
+        endPanel.add(choice2);
+        endPanel.add(choice3);
+        endPanel.add(choice4);
         endPanel.add(Box.createVerticalStrut(10));
         endPanel.add(guessButton);
         // only allow user to click next button if there's still another round; they must guess on round 3
@@ -467,13 +497,23 @@ public class MainGameCode extends JFrame implements ActionListener{
 	 * Reset the timer and start the next round
 	 */
 	private void resetRound() {
-	    // reset timer and start the next round
+		// reset timer and start the next round
 	    roundTime = 90;
 	    round++;
+	    /*minutes = roundTime / 60;
+        seconds = roundTime % 60;
+        filled = String.format("%01d:%02d", minutes, seconds);
+		showTime.setOpaque(true);
+		showTime.setText(filled);*/
+		dp.repaint();
+		
+		// set variables to be false again so that hints will appear
 	    clueMessageShown = false;
 	    ghostMessageShown = false;
 	    riddleMessageShown = false;
-	    timer.restart();
+	    
+	    // restart timer
+		timer.start();
 	} //end resetRound()
 	
 	private class DrawingPanel extends JPanel {
@@ -554,6 +594,11 @@ public class MainGameCode extends JFrame implements ActionListener{
 
 	        // draw background
 	        g2.drawImage(restaurantbg, 0, 0, PANW, PANH, null);
+	        
+	        // draw timer bar
+            g2.setPaint(Color.RED);
+            int barLength = (int) ((double) roundTime / (double) 100 * PANW - 10);
+            g2.fillRect(10, PANH - 10, barLength, 20);
 
 	        // draw Judy
 	        if (Barrier.judyIsVisible(playerX,playerY)==true) {
@@ -575,11 +620,11 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        if (round == 0 && judyBox.intersects(clueRect1) && !clueMessageShown) {
 	            showMessageDialog(null, clue1.getMessage());
 	            clueMessageShown = true;
-	            repaint();
+	            //repaint();
 	        } else if (round == 0 && judyBox.intersects(ghostRect1) && !ghostMessageShown) {
 	            showMessageDialog(null, ghost1.getMessage());
 	            ghostMessageShown = true;
-	            repaint();
+	            // repaint();
 	        } else if (round == 0 && judyBox.intersects(riddleRect1) && !riddleMessageShown) {
 	        	// make formatted message with answers displayed vertically
 	            String message = riddle1.getPrompt();
@@ -604,11 +649,11 @@ public class MainGameCode extends JFrame implements ActionListener{
 	        if (round == 1 && judyBox.intersects(clueRect2) && !clueMessageShown) {
 	            showMessageDialog(null, clue2.getMessage());
 	            clueMessageShown = true;
-	            repaint();
+	            //dp.repaint();
 	        } else if (round == 1 && judyBox.intersects(ghostRect2) && !ghostMessageShown) {
 	            showMessageDialog(null, ghost2.getMessage());
 	            ghostMessageShown = true;
-	            repaint();
+	            //dp.repaint();
 	        } else if (round == 1 && judyBox.intersects(riddleRect2) && !riddleMessageShown) {
 	            // make formatted message with answers displayed vertically
 	            String message = riddle2.getPrompt();
@@ -627,17 +672,20 @@ public class MainGameCode extends JFrame implements ActionListener{
 	            handleRiddleChoice(choice);
 
 	            riddleMessageShown = true;
+	            
+	            // when user interacts with messagedialog, repaint the screen
+	            //SwingUtilities.invokeLater(() -> repaint());
 	        }
 	        
 	        // check for collisions with hints for round 3
 	        if (round == 2 && judyBox.intersects(clueRect3) && !clueMessageShown) {
 	            showMessageDialog(null, clue3.getMessage());
 	            clueMessageShown = true;
-	            repaint();
+	            //repaint();
 	        } else if (round == 2 && judyBox.intersects(ghostRect3) && !ghostMessageShown) {
 	            showMessageDialog(null, ghost3.getMessage());
 	            ghostMessageShown = true;
-	            repaint();
+	            //repaint();
 	        } else if (round == 2 && judyBox.intersects(riddleRect3) && !riddleMessageShown) {
 	            // make formatted message with answers displayed vertically
 	            String message = riddle3.getPrompt();
@@ -657,6 +705,9 @@ public class MainGameCode extends JFrame implements ActionListener{
 
 	            riddleMessageShown = true;
 	        }
+	        
+	        // when user interacts with messagedialog, repaint the screen
+            SwingUtilities.invokeLater(() -> repaint());
         
 	    } //end paintComponent(Graphics)
 	}
@@ -711,7 +762,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	private void showMessageDialog(String title, String message) {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
         this.repaint();
-  }//end showMessageDialog(String, String)
+	}//end showMessageDialog(String, String)
 	
 	/**
 	 * Loads an image from a file in the resource folder
