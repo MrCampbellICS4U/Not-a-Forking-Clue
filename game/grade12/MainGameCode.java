@@ -10,8 +10,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
-import javax.swing.Timer;
+
 import java.io.*;
 
 public class MainGameCode extends JFrame implements ActionListener{
@@ -32,7 +37,6 @@ public class MainGameCode extends JFrame implements ActionListener{
     private boolean riddleMessageShown = false;
 	
 	// create Character objects
-
 	private Character po = new Character("Master Ping Xiao Po", 21, "Chef", "Master Ping Xiao Po has been the head "
 			+ "chef at Campbell’s Cuisine for a few months now. He certainly has access to an arsenal of weapons…");
 	private Character pooh = new Character("Winnie the Pooh", 24, "Host", "Winnie the Pooh is a very new addition to the "
@@ -116,6 +120,12 @@ public class MainGameCode extends JFrame implements ActionListener{
     private JPanel endPanel, radioPanel, buttonPanel;
     private int endPANW = 800;
     private int endPANH = 400;
+    
+    // endPanel imageicon labels + audio
+    private ImageIcon stars0, stars1, stars2, stars3;
+    private JLabel zeroStar, oneStar, twoStar, threeStar;
+    private String songFilePath = "res/bgmusic.wav";
+	private Clip clip;
 	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -193,7 +203,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    contextPanel.add(Box.createVerticalStrut(10));
 	    contextPanel.add(nextButton);
 
-	 // pack, center, display
+	    // pack, center, display
 	    this.add(contextPanel);
 	    this.pack();
 	    this.setLocationRelativeTo(null);
@@ -222,6 +232,8 @@ public class MainGameCode extends JFrame implements ActionListener{
 		// drawing panel
 		dp = new DrawingPanel();
 		mainPanel.add(dp);
+		
+		//playSong(songFilePath);
 		
 		// load different backgrounds based on the current round
 	    switch (round) {
@@ -325,6 +337,16 @@ public class MainGameCode extends JFrame implements ActionListener{
         // labels to indicate whether user guess was correct
         right = new JLabel("Good job! You have successfully found the murderer.");
         wrong = new JLabel("You failed to find the murderer.");
+        
+        // labels to show user score
+        stars0 = loadImageIcon("/res/zerostar.png");
+		zeroStar = new JLabel(stars0);
+		stars1 = loadImageIcon("/res/onestar.png");
+		oneStar = new JLabel(stars1);
+		stars2 = loadImageIcon("/res/twostar.png");
+		twoStar = new JLabel(stars2);
+		stars3 = loadImageIcon("/res/threestar.png");
+		threeStar = new JLabel(stars3);
 
         ButtonGroup group = new ButtonGroup();
         group.add(choice1);
@@ -387,10 +409,18 @@ public class MainGameCode extends JFrame implements ActionListener{
                     buttonPanel.remove(quitButton);
                     
                     // Check which radio button is selected and display the label accordingly
-                    if (choice1.isSelected()) {
-                        radioPanel.add(right);
+                    if (round == 0 && choice1.isSelected()) {
+                        endPanel.add(right);
+                        endPanel.add(threeStar);
+                    } else if (round == 1 && choice1.isSelected()) {
+                        endPanel.add(right);
+                        endPanel.add(twoStar);
+                    } else if (round == 2 && choice1.isSelected()) {
+                        endPanel.add(right);
+                        endPanel.add(oneStar);
                     } else if (choice2.isSelected() || choice3.isSelected() || choice4.isSelected()) {
-                        radioPanel.add(wrong);
+                        endPanel.add(wrong);
+                        endPanel.add(zeroStar);
                     }
 
                     endPanel.add(quitButton);
@@ -437,6 +467,11 @@ public class MainGameCode extends JFrame implements ActionListener{
 	    clueMessageShown = false;
 	    ghostMessageShown = false;
 	    riddleMessageShown = false;
+	    
+	    // restart song
+		/*clip.stop();
+		clip.setMicrosecondPosition(0); // rewind to the beginning
+        clip.start();*/
 	    
 	    // restart timer
 		timer.start();
@@ -633,6 +668,7 @@ public class MainGameCode extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		roundTime--; //timer ticks
 		if (roundTime == 0) {
+			//clip.stop();
 			goToEndPanel(); //end game
 			timer.stop();
 		}
@@ -682,8 +718,23 @@ public class MainGameCode extends JFrame implements ActionListener{
 	}//end showMessageDialog(String, String)
 	
 	/**
-	 * Loads an image from a file in the resource folder
-	 * @param 	String filename	name of the file
+     * try playing the WAV file
+     */
+    public void playSong(String soundName) {
+    	try {
+    		AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
+    		clip = AudioSystem.getClip();
+    		clip.open(audioInputStream);
+    		clip.start();
+    	} catch(UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+    		System.out.println("Error with playing sound.");
+    		ex.printStackTrace( );
+    	}
+    }
+	
+	/**
+	 * loads an image from a file in the resource folder
+	 * @param filename	name of the file
 	 * @return	returns a BufferedImage connected to filename
 	 */
 	BufferedImage loadImage(String filename) {
@@ -701,7 +752,28 @@ public class MainGameCode extends JFrame implements ActionListener{
 			JOptionPane.showMessageDialog(null, "An image failed to load: " + filename , "ERROR", JOptionPane.ERROR_MESSAGE);
 		}
 		return image;
-	}//end loadImage(String)
+	}
+	
+	/**
+	 * loads an image from a file in the resource folder (but for an ImageIcon)
+	 * @param filename	name of the file
+	 * @return	returns a ImageIcon connected to filename
+	 */
+	ImageIcon loadImageIcon(String filename) {
+	    ImageIcon icon = null;    
+	    java.net.URL imageURL = this.getClass().getResource(filename);
+	    
+	    if (imageURL != null) {
+	        try {
+	            icon = new ImageIcon(imageURL);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    } else {
+	        JOptionPane.showMessageDialog(null, "An image failed to load: " + filename, "ERROR", JOptionPane.ERROR_MESSAGE);
+	    }
+	    return icon;
+	}
 	
 	/**
 	 * Updates playerX (when accounting for collisions in Barrier class)
